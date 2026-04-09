@@ -12,10 +12,12 @@ public class BallMotion : MonoBehaviour
     private Transform ball;
     private bool isMoving;
     private float oscillationTime;
+    private IInputService inputService;
 
     void Awake()
     {
         ball = GetComponent<Transform>();
+        inputService = ServiceLocator.Get<IInputService>();
     }
 
     void Update()
@@ -36,13 +38,13 @@ public class BallMotion : MonoBehaviour
 
     private void HandleInput()
     {
-        if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
+        if (inputService.GetForward())
             StartMove(0, stepValue);
-        else if (Input.GetKeyDown(KeyCode.DownArrow) || Input.GetKeyDown(KeyCode.S))
+        else if (inputService.GetBackward())
             StartMove(0, -stepValue);
-        else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
+        else if (inputService.GetLeft())
             StartMove(-stepValue, 0);
-        else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
+        else if (inputService.GetRight())
             StartMove(stepValue, 0);
     }
 
