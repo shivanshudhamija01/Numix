@@ -482,7 +482,7 @@ GameObject:
   - component: {fileID: 954892809}
   - component: {fileID: 954892810}
   m_Layer: 0
-  m_Name: GridSpawner
+  m_Name: LevelGenerator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

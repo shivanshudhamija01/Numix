@@ -5,12 +5,11 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
-public class Tile : MonoBehaviour, IPointerEnterHandler, ITile
+public class Tile : MonoBehaviour, IPointerClickHandler, ITile
 {
     [SerializeField] private TextMeshPro tileNumberText;
     private int tileNumber = -1;
-
-    public void OnPointerEnter(PointerEventData eventData)
+    public void OnPointerClick(PointerEventData eventData)
     {
         Debug.Log("Pointer enter and now spawn the ball on this tile");
         Debug.Log("Value of tile number is : " + tileNumber);
