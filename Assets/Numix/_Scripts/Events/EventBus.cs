@@ -14,7 +14,7 @@ public class EventBus : IEventBus
     }
     public void Unsubscribe<T>(Action<T> listener) where T : IGameEvent
     {
-        var type = typeof(T);
+        var type = typeof(T);     
         if (_events.TryGetValue(type, out var listeners))
         {
             var result = Delegate.Remove(listeners, listener);

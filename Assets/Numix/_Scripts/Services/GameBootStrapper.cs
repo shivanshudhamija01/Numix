@@ -7,5 +7,6 @@ public class GameBootStrapper : MonoBehaviour
     void Awake()
     {
         ServiceLocator.Register<IInputService>(new InputService());
+        ServiceLocator.Register<IEventBus>(new EventBus());
     }
 }

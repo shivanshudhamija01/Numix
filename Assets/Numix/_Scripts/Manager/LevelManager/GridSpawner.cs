@@ -5,18 +5,40 @@ using UnityEngine;
 
 public class GridSpawner : MonoBehaviour
 {
+    [SerializeField] private GameObject ball;
     [SerializeField] private GameObject tile;
     [SerializeField] private float stepValue;
     private Coordinate startingPoint;
+    private GameObject ballInstance;
     private int[,] matrix = {
         { 0, 0, 3 },
         { 6, 0, 0 },
         { 9, 0, 0 }
     };
+    private EventBus eventBus;
     void Awake()
     {
         startingPoint = new Coordinate();
+        eventBus = ServiceLocator.Get<IEventBus>() as EventBus;
     }
+    void OnEnable()
+    {
+        eventBus.Subscribe<Events.OnTileClicked>(OnTileClicked);
+    }
+    void OnDisable()
+    {
+        eventBus.Unsubscribe<Events.OnTileClicked>(OnTileClicked);
+    }
+
+    private void OnTileClicked(Events.OnTileClicked clicked)
+    {
+        if(ballInstance != null)
+        {
+            return;
+        }
+        ballInstance = Instantiate(ball, clicked.position + Vector3.up, Quaternion.identity);
+    }
+
     void Start()
     {
         int row = matrix.GetLength(0);
