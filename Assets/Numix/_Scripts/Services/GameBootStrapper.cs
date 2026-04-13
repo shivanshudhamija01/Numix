@@ -8,5 +8,6 @@ public class GameBootStrapper : MonoBehaviour
     {
         ServiceLocator.Register<IInputService>(new InputService());
         ServiceLocator.Register<IEventBus>(new EventBus());
+        ServiceLocator.Register<IMoveValidationService>(new MoveValidationService());
     }
 }

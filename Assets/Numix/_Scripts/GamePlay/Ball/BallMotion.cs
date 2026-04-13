@@ -13,11 +13,14 @@ public class BallMotion : MonoBehaviour
     private bool isMoving;
     private float oscillationTime;
     private IInputService inputService;
+    private IMoveValidationService moveValidationService;
 
     void Awake()
     {
         ball = GetComponent<Transform>();
         inputService = ServiceLocator.Get<IInputService>();
+        moveValidationService = ServiceLocator.Get<IMoveValidationService>();
+        moveValidationService.AssingBallCurrentPosition(new Vector3(transform.position.x, 0, transform.position.z));
     }
 
     void Update()
@@ -60,6 +63,13 @@ public class BallMotion : MonoBehaviour
 
         Vector3 targetPos = new Vector3(startPos.x + xStep, 0f, startPos.z + zStep);
 
+        // if face any issue in targetPos matching , then use the rounded target
+        // Vector3 roundedTarget = new Vector3(Mathf.Round(targetPos.x * 100f) / 100f, 0f, Mathf.Round(targetPos.z * 100f) / 100f);
+        if (!moveValidationService.IsValidMove(targetPos))
+        {
+            isMoving = false;
+            yield break;
+        }
         float progress = 0f;
 
         while (progress < 1f)
@@ -83,7 +93,7 @@ public class BallMotion : MonoBehaviour
         }
 
         transform.position = targetPos;
-
+        moveValidationService.UpdateBallLastPosition(targetPos);
         oscillationTime = 0f;
         isMoving = false;
     }

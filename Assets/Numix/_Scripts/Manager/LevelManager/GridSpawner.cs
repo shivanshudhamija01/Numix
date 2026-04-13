@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class GridSpawner : MonoBehaviour
 {
-    [SerializeField] private GameObject ball;
     [SerializeField] private GameObject tile;
     [SerializeField] private float stepValue;
     private Coordinate startingPoint;
@@ -15,30 +14,14 @@ public class GridSpawner : MonoBehaviour
         { 6, 0, 0 },
         { 9, 0, 0 }
     };
+    private Dictionary<Vector3, GameObject> positionToTile = new();
     private EventBus eventBus;
+    private IMoveValidationService moveValidationService;
     void Awake()
     {
         startingPoint = new Coordinate();
-        eventBus = ServiceLocator.Get<IEventBus>() as EventBus;
+        moveValidationService = ServiceLocator.Get<IMoveValidationService>();
     }
-    void OnEnable()
-    {
-        eventBus.Subscribe<Events.OnTileClicked>(OnTileClicked);
-    }
-    void OnDisable()
-    {
-        eventBus.Unsubscribe<Events.OnTileClicked>(OnTileClicked);
-    }
-
-    private void OnTileClicked(Events.OnTileClicked clicked)
-    {
-        if(ballInstance != null)
-        {
-            return;
-        }
-        ballInstance = Instantiate(ball, clicked.position + Vector3.up, Quaternion.identity);
-    }
-
     void Start()
     {
         int row = matrix.GetLength(0);
@@ -53,6 +36,7 @@ public class GridSpawner : MonoBehaviour
         Debug.Log("Start point for the row is : " + startingPoint.x + " " + "Start point of the col is : " + startingPoint.z);
 
         SpawnGrid();
+        moveValidationService.MapPositionToTile(positionToTile);
     }
 
     private void SpawnGrid()
@@ -68,6 +52,7 @@ public class GridSpawner : MonoBehaviour
                 GameObject Tile = Instantiate(tile, position, Quaternion.identity);
                 ITile individualTile = Tile.GetComponent<ITile>();
                 individualTile.TileNumber = matrix[i, j];
+                positionToTile[position] = Tile;
             }
         }
     }
