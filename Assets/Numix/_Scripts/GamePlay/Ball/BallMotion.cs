@@ -17,6 +17,7 @@ public class BallMotion : MonoBehaviour
     private IMoveValidationService moveValidationService;
     private IStepTrackerService stepTrackerService;
     private IPuzzleValidationService puzzleValidationService;
+    private IAudioService audioService;
 
     void Awake()
     {
@@ -30,6 +31,8 @@ public class BallMotion : MonoBehaviour
         stepTrackerService.IncrementStep();
         puzzleValidationService = ServiceLocator.Get<IPuzzleValidationService>();
         puzzleValidationService.EvaluateTile(ballInitialPosition);
+        audioService = ServiceLocator.Get<IAudioService>();
+        audioService.PlaySFX(SoundType.d1);
     }
 
     void Update()
@@ -107,6 +110,8 @@ public class BallMotion : MonoBehaviour
         moveValidationService.UpdateBallLastPosition(targetPos);
         stepTrackerService.IncrementStep();
         puzzleValidationService.EvaluateTile(targetPos);
+        SoundType randomSound = (SoundType)Random.Range(0, System.Enum.GetValues(typeof(SoundType)).Length);
+        audioService.PlaySFX(randomSound);
         oscillationTime = 0f;
         isMoving = false;
     }

@@ -4,15 +4,11 @@ using UnityEngine;
 
 public class AudioInstaller : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] private AudioSource bgmSource;
+    [SerializeField] private AudioSource sfxSource;
+    [SerializeField] private List<SoundData> soundDatas;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public AudioSource BGMSource => bgmSource;
+    public AudioSource SFXSource => sfxSource;
+    public List<SoundData> Sounds => soundDatas;
 }
