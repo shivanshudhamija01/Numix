@@ -1,6 +1,6 @@
-using  UnityEngine;
+using UnityEngine;
 
-public class Events 
+public class Events
 {
     public struct OnTileClicked : IGameEvent
     {
@@ -8,6 +8,18 @@ public class Events
         public OnTileClicked(Vector3 position)
         {
             this.position = position;
+        }
+    }
+
+    public struct OnTileEvaluate : IGameEvent
+    {
+        public Vector3 position;
+        public bool success;
+
+        public OnTileEvaluate(Vector3 position, bool success)
+        {
+            this.position = position;
+            this.success = success;
         }
     }
 }

@@ -10,7 +10,6 @@ public class MoveValidationService : IMoveValidationService
 
     public bool IsValidMove(Vector3 position)
     {
-        Debug.Log("Size of dictionary is :  " + tileMap.Count);
         if (tileMap == null)
         {
             return false;
@@ -29,15 +28,14 @@ public class MoveValidationService : IMoveValidationService
 
     public void UpdateBallLastPosition(Vector3 position)
     {
+        Debug.Log("Ball last position is : " + currentBallPosition);
+        Debug.Log("Ball current position is : " + position);
         previouslyVisitedTiles.Enqueue(currentBallPosition);
         currentBallPosition = position;
     }
     public void AssingBallCurrentPosition(Vector3 position)
     {
-        if (currentBallPosition == null)
-        {
-            currentBallPosition = position;
-        }
+        currentBallPosition = position;
     }
     private bool IsPreviouslyVisited(Vector3 position)
     {

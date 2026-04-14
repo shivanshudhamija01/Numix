@@ -144,6 +144,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileNumberText: {fileID: 3764480695898838773}
+  black: {fileID: 2100000, guid: 9118318d5d1834d9d91dcf3e377f70f8, type: 2}
+  red: {fileID: 2100000, guid: 833c6a8bb936443f9a856e60c2915dd9, type: 2}
+  green: {fileID: 2100000, guid: b97876e5b22e24d4b96f63f39716ce0d, type: 2}
+  tileRenderer: {fileID: 3764480694792544891}
 --- !u!1 &3764480695898838763
 GameObject:
   m_ObjectHideFlags: 0

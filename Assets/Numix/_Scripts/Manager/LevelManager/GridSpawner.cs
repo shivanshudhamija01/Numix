@@ -17,10 +17,12 @@ public class GridSpawner : MonoBehaviour
     private Dictionary<Vector3, GameObject> positionToTile = new();
     private EventBus eventBus;
     private IMoveValidationService moveValidationService;
+    private IGridDataService gridDataService;
     void Awake()
     {
         startingPoint = new Coordinate();
         moveValidationService = ServiceLocator.Get<IMoveValidationService>();
+        gridDataService = ServiceLocator.Get<IGridDataService>();
     }
     void Start()
     {
@@ -37,6 +39,7 @@ public class GridSpawner : MonoBehaviour
 
         SpawnGrid();
         moveValidationService.MapPositionToTile(positionToTile);
+        gridDataService.MapTileToPosition(positionToTile);
     }
 
     private void SpawnGrid()

@@ -497,7 +497,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2accd0cf96cd48e4b4b978bb506e006, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ball: {fileID: 6472069257787945721, guid: efdbd047ae1e4e74d9346925590bd927, type: 3}
   tile: {fileID: 3764480695718370053, guid: 8a1ad9649a88d452bb87991bd9d3b802, type: 3}
   stepValue: 1.25
 --- !u!114 &954892811

@@ -9,18 +9,27 @@ public class BallMotion : MonoBehaviour
     [SerializeField] private float movementSpeed = 4f;
     [SerializeField] private float arcHeight = 2f;
 
+    private Vector3 ballInitialPosition;
     private Transform ball;
     private bool isMoving;
     private float oscillationTime;
     private IInputService inputService;
     private IMoveValidationService moveValidationService;
+    private IStepTrackerService stepTrackerService;
+    private IPuzzleValidationService puzzleValidationService;
 
     void Awake()
     {
+        ballInitialPosition = new Vector3(transform.position.x, 0, transform.position.z);
         ball = GetComponent<Transform>();
         inputService = ServiceLocator.Get<IInputService>();
         moveValidationService = ServiceLocator.Get<IMoveValidationService>();
-        moveValidationService.AssingBallCurrentPosition(new Vector3(transform.position.x, 0, transform.position.z));
+        stepTrackerService = ServiceLocator.Get<IStepTrackerService>();
+        puzzleValidationService = ServiceLocator.Get<IPuzzleValidationService>();
+        moveValidationService.AssingBallCurrentPosition(ballInitialPosition);
+        stepTrackerService.IncrementStep();
+        puzzleValidationService = ServiceLocator.Get<IPuzzleValidationService>();
+        puzzleValidationService.EvaluateTile(ballInitialPosition);
     }
 
     void Update()
@@ -65,8 +74,10 @@ public class BallMotion : MonoBehaviour
 
         // if face any issue in targetPos matching , then use the rounded target
         // Vector3 roundedTarget = new Vector3(Mathf.Round(targetPos.x * 100f) / 100f, 0f, Mathf.Round(targetPos.z * 100f) / 100f);
+
         if (!moveValidationService.IsValidMove(targetPos))
         {
+            Debug.Log("Not a valid move");
             isMoving = false;
             yield break;
         }
@@ -94,6 +105,8 @@ public class BallMotion : MonoBehaviour
 
         transform.position = targetPos;
         moveValidationService.UpdateBallLastPosition(targetPos);
+        stepTrackerService.IncrementStep();
+        puzzleValidationService.EvaluateTile(targetPos);
         oscillationTime = 0f;
         isMoving = false;
     }
