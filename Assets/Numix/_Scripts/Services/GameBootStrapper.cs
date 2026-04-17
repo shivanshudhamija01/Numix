@@ -5,10 +5,13 @@ using UnityEngine;
 public class GameBootStrapper : MonoBehaviour
 {
     [SerializeField] private AudioInstaller audioInstaller;
+
+    private IEventBus eventBus;
     void Awake()
     {
         ServiceLocator.Register<IInputService>(new InputService());
         ServiceLocator.Register<IEventBus>(new EventBus());
+        eventBus = ServiceLocator.Get<IEventBus>();
         ServiceLocator.Register<IMoveValidationService>(new MoveValidationService());
         ServiceLocator.Register<IGridDataService>(new GridDataService());
         ServiceLocator.Register<IStepTrackerService>(new StepTrackerService());

@@ -8,7 +8,14 @@ public abstract class ViewBase
 
     public void CreateUI()
     {
-        UIPackage.AddPackage(PackageName);
+        var scaler = Stage.inst.gameObject.GetComponent<UIContentScaler>();
+
+        GRoot.inst.SetContentScaleFactor(720, 1080, UIContentScaler.ScreenMatchMode.MatchWidthOrHeight);
+        scaler.ApplyChange();
+        GRoot.inst.ApplyContentScaleFactor();
+        GRoot.inst.MakeFullScreen();
+
+        UIPackage.AddPackage($"FGUI/{PackageName}");
         Panel = UIPackage.CreateObject(PackageName, ComponentName).asCom;
         GRoot.inst.AddChild(Panel);
         Panel.SetSize(GRoot.inst.width, GRoot.inst.height);

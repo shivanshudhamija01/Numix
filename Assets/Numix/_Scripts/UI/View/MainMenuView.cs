@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class MainMenuView : ViewBase
 {
-    protected override string PackageName => "MainMenuView";
+    protected override string PackageName => "MainMenu";
     protected override string ComponentName => "MainMenuPanel";
     private GButton playButton;
     private GButton settingButton;
