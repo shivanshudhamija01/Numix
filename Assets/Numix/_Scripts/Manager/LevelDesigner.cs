@@ -6,6 +6,8 @@ public class LevelDesigner : MonoBehaviour
     public int width = 10;
     public int height = 10;
 
+    public int levelNumber = 1;
+
     public TileData[,] grid = new TileData[10, 10];
 
     public GameObject numberTilePrefab;
@@ -14,11 +16,42 @@ public class LevelDesigner : MonoBehaviour
     public Transform levelParent;
     public float spacing = 1.1f;
 
+    public LevelData currentLevelData;
+
     private void OnValidate()
     {
-        if (grid == null || grid.Length == 0)
-            grid = new TileData[width, height];
+        if (width <= 0) width = 1;
+        if (height <= 0) height = 1;
 
+        if (grid == null)
+        {
+            grid = new TileData[width, height];
+        }
+
+        // If size mismatch → resize grid
+        if (grid.GetLength(0) != width || grid.GetLength(1) != height)
+        {
+            TileData[,] newGrid = new TileData[width, height];
+
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    if (x < grid.GetLength(0) && y < grid.GetLength(1))
+                    {
+                        newGrid[x, y] = grid[x, y];
+                    }
+                    else
+                    {
+                        newGrid[x, y] = new TileData();
+                    }
+                }
+            }
+
+            grid = newGrid;
+        }
+
+        // Ensure no null cells
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
@@ -29,9 +62,119 @@ public class LevelDesigner : MonoBehaviour
         }
     }
 
+    private string GetLevelPath()
+    {
+        return $"Assets/Levels/Level_{levelNumber}.asset";
+    }
+
+    public void LoadOrCreateLevel()
+    {
+#if UNITY_EDITOR
+        // Ensure folder exists
+        if (!AssetDatabase.IsValidFolder("Assets/Levels"))
+        {
+            AssetDatabase.CreateFolder("Assets", "Levels");
+        }
+
+        string path = GetLevelPath();
+
+        LevelData data = AssetDatabase.LoadAssetAtPath<LevelData>(path);
+
+        if (data == null)
+        {
+            // Create new level
+            data = ScriptableObject.CreateInstance<LevelData>();
+
+            data.width = width;
+            data.height = height;
+            data.grid = new TileData[width * height];
+
+            for (int i = 0; i < data.grid.Length; i++)
+            {
+                data.grid[i] = new TileData();
+            }
+
+            AssetDatabase.CreateAsset(data, path);
+            AssetDatabase.SaveAssets();
+
+            Debug.Log($"Created new level: {path}");
+        }
+        else
+        {
+            Debug.Log($"Loaded existing level: {path}");
+        }
+
+        currentLevelData = data;
+
+        LoadLevel(data);
+#endif
+    }
+
+    public void LoadLevel(LevelData data)
+    {
+        if (data == null) return;
+
+        width = data.width;
+        height = data.height;
+
+        grid = new TileData[width, height];
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                int index = x + y * width;
+
+                TileData source = data.grid[index];
+
+                TileData copy = new TileData();
+                copy.type = source.type;
+                copy.number = source.number;
+
+                grid[x, y] = copy;
+            }
+        }
+    }
+
+    public void SaveByLevelNumber()
+    {
+#if UNITY_EDITOR
+        if (currentLevelData == null)
+        {
+            Debug.LogError("No LevelData loaded!");
+            return;
+        }
+
+        currentLevelData.width = width;
+        currentLevelData.height = height;
+        currentLevelData.grid = new TileData[width * height];
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                int index = x + y * width;
+
+                TileData source = grid[x, y];
+
+                TileData copy = new TileData();
+                copy.type = source.type;
+                copy.number = source.number;
+
+                currentLevelData.grid[index] = copy;
+            }
+        }
+
+        EditorUtility.SetDirty(currentLevelData);
+        AssetDatabase.SaveAssets();
+
+        Debug.Log($"Saved Level {levelNumber}");
+#endif
+    }
+
     public void GenerateLevel()
     {
-        // Clear old level
+#if UNITY_EDITOR
         if (levelParent != null)
         {
             for (int i = levelParent.childCount - 1; i >= 0; i--)
@@ -76,5 +219,6 @@ public class LevelDesigner : MonoBehaviour
                     tile.transform.SetParent(levelParent);
             }
         }
+#endif
     }
 }

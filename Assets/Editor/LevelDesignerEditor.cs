@@ -14,6 +14,26 @@ public class LevelDesignerEditor : Editor
         DrawDefaultInspector();
 
         GUILayout.Space(10);
+
+        // Level number input
+        designer.levelNumber = EditorGUILayout.IntField("Level Number", designer.levelNumber);
+
+        GUILayout.BeginHorizontal();
+
+        if (GUILayout.Button("Load / Create Level"))
+        {
+            designer.LoadOrCreateLevel();
+        }
+
+        if (GUILayout.Button("Save Level"))
+        {
+            designer.SaveByLevelNumber();
+        }
+
+        GUILayout.EndHorizontal();
+
+        GUILayout.Space(10);
+
         GUILayout.Label("Tile Selector", EditorStyles.boldLabel);
 
         selectedType = (TileType)EditorGUILayout.EnumPopup("Tile Type", selectedType);
