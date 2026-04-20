@@ -1,3 +1,4 @@
+using System;
 public enum SoundType
 {
     BGM,
@@ -9,4 +10,17 @@ public enum SoundType
     e1,
     f,
     g
+}
+public enum TileType
+{
+    Empty,
+    Number,
+    Blocked
+}
+
+[Serializable]
+public class TileData
+{
+    public TileType type;
+    public int number;
 }

@@ -1,21 +1,36 @@
 using UnityEngine;
+using UnityEditor;
 
 public class LevelDesigner : MonoBehaviour
 {
     public int width = 10;
     public int height = 10;
 
-    public bool[,] selectedTiles = new bool[10, 10];
+    public TileData[,] grid = new TileData[10, 10];
 
-    public GameObject tilePrefab;
+    public GameObject numberTilePrefab;
+    public GameObject blockedTilePrefab;
+
     public Transform levelParent;
-
     public float spacing = 1.1f;
+
+    private void OnValidate()
+    {
+        if (grid == null || grid.Length == 0)
+            grid = new TileData[width, height];
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                if (grid[x, y] == null)
+                    grid[x, y] = new TileData();
+            }
+        }
+    }
 
     public void GenerateLevel()
     {
-        if (tilePrefab == null) return;
-
         // Clear old level
         if (levelParent != null)
         {
@@ -25,16 +40,36 @@ public class LevelDesigner : MonoBehaviour
             }
         }
 
-        // Spawn selected tiles
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
             {
-                if (!selectedTiles[x, y]) continue;
+                TileData tileData = grid[x, y];
+
+                if (tileData == null || tileData.type == TileType.Empty)
+                    continue;
 
                 Vector3 pos = new Vector3(x * spacing, 0, y * spacing);
 
-                GameObject tile = (GameObject)UnityEditor.PrefabUtility.InstantiatePrefab(tilePrefab);
+                GameObject tile = null;
+
+                if (tileData.type == TileType.Blocked)
+                {
+                    tile = (GameObject)PrefabUtility.InstantiatePrefab(blockedTilePrefab);
+                }
+                else if (tileData.type == TileType.Number)
+                {
+                    tile = (GameObject)PrefabUtility.InstantiatePrefab(numberTilePrefab);
+
+                    var tileScript = tile.GetComponent<Tile>();
+                    if (tileScript != null)
+                    {
+                        tileScript.TileNumber = Mathf.Clamp(tileData.number, -1, 50);
+                    }
+                }
+
+                if (tile == null) continue;
+
                 tile.transform.position = pos;
 
                 if (levelParent != null)
