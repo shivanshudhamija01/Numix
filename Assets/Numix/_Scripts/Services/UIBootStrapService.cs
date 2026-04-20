@@ -27,18 +27,18 @@ public class UIBootStrapService : IUIBootStrap
         InstantiateViews();
         InstantiatePresenters();
         InitializePresenters();
-
-
+        AddViewsToList();
+        AddPresenterToList();
     }
 
     public List<IPresenter> GetPresenterList()
     {
-        throw new System.NotImplementedException();
+        return presenterBaseList;
     }
 
     public List<ViewBase> GetViewsList()
     {
-        throw new System.NotImplementedException();
+        return viewBaseList;
     }
     private void InstantiateViews()
     {
@@ -80,4 +80,5 @@ public class UIBootStrapService : IUIBootStrap
         presenterBaseList.Add(gameWinPresenter);
         presenterBaseList.Add(gamePausePresenter);
     }
+
 }

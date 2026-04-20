@@ -11,17 +11,19 @@ public class MainMenuPresenter : PresenterBase<MainMenuView>
     }
     public override void Initialize()
     {
-        View.CreateUI();
-        View.OnPlay(() =>
+        view.CreateUI();
+        view.OnPlay(() =>
         {
+            eventBus.Publish(new Events.OnGameStarted());
             Debug.Log("Play button is clicked");
         });
-        View.OnQuit(() =>
+        view.OnQuit(() =>
         {
             Debug.Log("Quit Game");
         });
-        View.OnSetting(() =>
+        view.OnSetting(() =>
         {
+            eventBus.Publish(new Events.OnSettingButtonClicked());
             Debug.Log("Setting button is clicked");
         });
     }

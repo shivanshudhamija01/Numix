@@ -10,9 +10,9 @@ public class GameLostPresenter : PresenterBase<GameLostView>
     }
     public override void Initialize()
     {
-        View.CreateUI();
-        View.OnRestart(() => { Debug.Log("Restart the level"); });
-        View.OnHome(() =>
+        view.CreateUI();
+        view.OnRestart(() => { Debug.Log("Restart the level"); });
+        view.OnHome(() =>
         {
             Debug.Log("Home button is clicked");
         });

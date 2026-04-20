@@ -1,5 +1,6 @@
 
 
+using System;
 using FairyGUI;
 
 public class SettingView : ViewBase
@@ -17,4 +18,5 @@ public class SettingView : ViewBase
         sfxSlider = Panel.GetChild("SFXSlider").asSlider;
         exitBtn = Panel.GetChild("ExitBtn").asButton;
     }
+    public void OnExit(Action action) => exitBtn.onClick.Add(() => action());
 }

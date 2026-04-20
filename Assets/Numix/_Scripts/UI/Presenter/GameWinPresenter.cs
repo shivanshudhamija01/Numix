@@ -10,12 +10,12 @@ public class GameWinPresenter : PresenterBase<GameWinView>
     }
     public override void Initialize()
     {
-        View.CreateUI();
-        View.OnNextLevel(() =>
+        view.CreateUI();
+        view.OnNextLevel(() =>
         {
             Debug.Log("Load Next Level");
         });
-        View.OnHome(() =>
+        view.OnHome(() =>
         {
             Debug.Log("Open the home page");
         });

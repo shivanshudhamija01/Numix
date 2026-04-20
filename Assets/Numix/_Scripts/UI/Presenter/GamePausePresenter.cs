@@ -10,16 +10,16 @@ public class GamePausePresenter : PresenterBase<GamePauseView>
 
     public override void Initialize()
     {
-        View.CreateUI();
-        View.OnHome(() =>
+        view.CreateUI();
+        view.OnHome(() =>
         {
             Debug.Log("Home button");
         });
-        View.OnRestart(() =>
+        view.OnRestart(() =>
         {
             Debug.Log("Restart the game");
         });
-        View.OnSetting(() =>
+        view.OnSetting(() =>
         {
             Debug.Log("On Setting Button Clicked");
         });

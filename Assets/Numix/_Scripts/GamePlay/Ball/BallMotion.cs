@@ -11,7 +11,7 @@ public class BallMotion : MonoBehaviour
 
     private Vector3 ballInitialPosition;
     private Transform ball;
-    private bool isMoving;
+    private bool isMoving = false;
     private float oscillationTime;
     private IInputService inputService;
     private IMoveValidationService moveValidationService;
@@ -33,14 +33,16 @@ public class BallMotion : MonoBehaviour
         puzzleValidationService.EvaluateTile(ballInitialPosition);
         audioService = ServiceLocator.Get<IAudioService>();
         audioService.PlaySFX(SoundType.d1);
+        Debug.Log(inputService == null ? "❌ InputService NULL" : "✅ InputService OK");
     }
 
     void Update()
     {
         if (!isMoving)
         {
-            Oscillate();
+            Debug.Log("Inside the update");
             HandleInput();
+            Oscillate();
         }
     }
 

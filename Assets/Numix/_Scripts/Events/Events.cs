@@ -22,4 +22,26 @@ public class Events
             this.success = success;
         }
     }
+    public struct OnGameStarted : IGameEvent
+    {
+        
+    }   
+    public struct OnGameWin : IGameEvent
+    {
+    }
+    public struct OnGameLost : IGameEvent
+    {
+    }
+     public struct OnGamePaused : IGameEvent
+    {
+    }
+     public struct OnGameResumed : IGameEvent
+    {
+    }
+    public struct OnExitButtonClicked : IGameEvent
+    {
+    }
+    public struct OnSettingButtonClicked : IGameEvent
+    {
+    }
 }

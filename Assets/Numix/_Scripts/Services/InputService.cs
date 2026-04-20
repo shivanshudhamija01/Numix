@@ -10,10 +10,12 @@ public class InputService : IInputService
     }
     public bool GetForward()
     {
+
         return Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow);
     }
     public bool GetBackward()
     {
+        Debug.Log("Backward");
         return Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow);
     }
     public bool GetLeft()
