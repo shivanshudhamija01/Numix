@@ -183,6 +183,10 @@ public class LevelDesigner : MonoBehaviour
             }
         }
 
+        // Calculate center offset
+        float offsetX = (width - 1) * spacing * 0.5f;
+        float offsetZ = (height - 1) * spacing * 0.5f;
+
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
@@ -192,7 +196,12 @@ public class LevelDesigner : MonoBehaviour
                 if (tileData == null || tileData.type == TileType.Empty)
                     continue;
 
-                Vector3 pos = new Vector3(x * spacing, 0, y * spacing);
+                // 🔥 Apply offset so center tile is at (0,0,0)
+                Vector3 pos = new Vector3(
+                    x * spacing - offsetX,
+                    0,
+                    y * spacing - offsetZ
+                );
 
                 GameObject tile = null;
 

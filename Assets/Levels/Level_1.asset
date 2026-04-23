@@ -12,24 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea1890a7ab35a4e5f9d7e70ecca46338, type: 3}
   m_Name: Level_1
   m_EditorClassIdentifier: 
-  width: 3
-  height: 3
+  width: 5
+  height: 1
   grid:
   - type: 1
-    number: 7
+    number: -1
+  - type: 1
+    number: 2
   - type: 1
     number: -1
   - type: 1
     number: -1
   - type: 1
-    number: -1
-  - type: 1
-    number: -1
-  - type: 1
-    number: 4
-  - type: 1
-    number: 1
-  - type: 1
-    number: -1
-  - type: 1
-    number: -1
+    number: 5
