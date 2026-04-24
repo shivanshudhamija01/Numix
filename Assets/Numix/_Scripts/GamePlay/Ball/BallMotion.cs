@@ -12,7 +12,8 @@ public class BallMotion : MonoBehaviour
     private Vector3 ballInitialPosition;
     private Transform ball;
     private bool isMoving = false;
-    private float oscillationTime;
+    private float oscillationTime = 0f;
+
     private IInputService inputService;
     private IMoveValidationService moveValidationService;
     private IStepTrackerService stepTrackerService;
@@ -23,24 +24,29 @@ public class BallMotion : MonoBehaviour
     {
         ballInitialPosition = new Vector3(transform.position.x, 0, transform.position.z);
         ball = GetComponent<Transform>();
+
         inputService = ServiceLocator.Get<IInputService>();
         moveValidationService = ServiceLocator.Get<IMoveValidationService>();
         stepTrackerService = ServiceLocator.Get<IStepTrackerService>();
         puzzleValidationService = ServiceLocator.Get<IPuzzleValidationService>();
+        audioService = ServiceLocator.Get<IAudioService>();
+
         moveValidationService.AssingBallCurrentPosition(ballInitialPosition);
         stepTrackerService.IncrementStep();
-        puzzleValidationService = ServiceLocator.Get<IPuzzleValidationService>();
         puzzleValidationService.EvaluateTile(ballInitialPosition);
-        audioService = ServiceLocator.Get<IAudioService>();
+
         audioService.PlaySFX(SoundType.d1);
+
         Debug.Log(inputService == null ? "❌ InputService NULL" : "✅ InputService OK");
     }
 
     void Update()
     {
+        // Let InputService process raw touch data first
+        inputService.Update();
+
         if (!isMoving)
         {
-            Debug.Log("Inside the update");
             HandleInput();
             Oscillate();
         }
@@ -55,14 +61,17 @@ public class BallMotion : MonoBehaviour
 
     private void HandleInput()
     {
-        if (inputService.GetForward())
-            StartMove(0, stepValue);
-        else if (inputService.GetBackward())
-            StartMove(0, -stepValue);
-        else if (inputService.GetLeft())
-            StartMove(-stepValue, 0);
-        else if (inputService.GetRight())
-            StartMove(stepValue, 0);
+        // Diagonals checked first to take priority over cardinals
+        if (inputService.GetForwardLeft()) StartMove(-stepValue, stepValue);
+        else if (inputService.GetForwardRight()) StartMove(stepValue, stepValue);
+        else if (inputService.GetBackwardLeft()) StartMove(-stepValue, -stepValue);
+        else if (inputService.GetBackwardRight()) StartMove(stepValue, -stepValue);
+
+        // Cardinals
+        else if (inputService.GetForward()) StartMove(0, stepValue);
+        else if (inputService.GetBackward()) StartMove(0, -stepValue);
+        else if (inputService.GetLeft()) StartMove(-stepValue, 0);
+        else if (inputService.GetRight()) StartMove(stepValue, 0);
     }
 
     private void StartMove(float xStep, float zStep)
@@ -73,12 +82,8 @@ public class BallMotion : MonoBehaviour
 
     private IEnumerator MoveOnSurface(float xStep, float zStep)
     {
-        Vector3 startPos = transform.position; // captures real Y at moment of input
-
+        Vector3 startPos = transform.position;
         Vector3 targetPos = new Vector3(startPos.x + xStep, 0f, startPos.z + zStep);
-
-        // if face any issue in targetPos matching , then use the rounded target
-        // Vector3 roundedTarget = new Vector3(Mathf.Round(targetPos.x * 100f) / 100f, 0f, Mathf.Round(targetPos.z * 100f) / 100f);
 
         if (!moveValidationService.IsValidMove(targetPos))
         {
@@ -86,6 +91,7 @@ public class BallMotion : MonoBehaviour
             isMoving = false;
             yield break;
         }
+
         float progress = 0f;
 
         while (progress < 1f)
@@ -93,27 +99,26 @@ public class BallMotion : MonoBehaviour
             progress += Time.deltaTime * movementSpeed / stepValue;
             progress = Mathf.Clamp01(progress);
 
-            // Bring startY down to 0 linearly as progress goes 0→1
             float baseY = Mathf.Lerp(startPos.y, 0f, progress);
-
-            // Parabola bump on top — Sin(PI) = 0 so it doesn't affect the landing
             float bumpY = Mathf.Sin(progress * Mathf.PI) * ballHeight;
 
             float x = Mathf.Lerp(startPos.x, targetPos.x, progress);
             float z = Mathf.Lerp(startPos.z, targetPos.z, progress);
+            float y = Mathf.Clamp(bumpY + baseY, 0f, arcHeight);
 
-            float y = Mathf.Clamp(bumpY + baseY, 0, arcHeight);
             transform.position = new Vector3(x, y, z);
-
             yield return null;
         }
 
         transform.position = targetPos;
+
         moveValidationService.UpdateBallLastPosition(targetPos);
         stepTrackerService.IncrementStep();
         puzzleValidationService.EvaluateTile(targetPos);
+
         SoundType randomSound = (SoundType)Random.Range(0, System.Enum.GetValues(typeof(SoundType)).Length);
         audioService.PlaySFX(randomSound);
+
         oscillationTime = 0f;
         isMoving = false;
     }
