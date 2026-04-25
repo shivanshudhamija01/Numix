@@ -13,5 +13,8 @@ public abstract class PresenterBase<TView> : IPresenter where TView : ViewBase
     {
 
     }
+    public virtual void Dispose()
+    {
 
+    }
 }

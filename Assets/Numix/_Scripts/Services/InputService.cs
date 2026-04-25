@@ -58,7 +58,7 @@ public class InputService : IInputService
             bool isVertical = ratioY > DiagonalRatio;
 
             bool movingRight = delta.x > 0;
-            bool movingUp = delta.y > 0;  // Unity screen Y: up = positive
+            bool movingUp = delta.y > 0; 
 
             if (isVertical && isHorizontal)
             {

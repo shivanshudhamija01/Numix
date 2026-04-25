@@ -6,10 +6,22 @@ public class LevelSelectorPresenter : PresenterBase<LevelSelectorView>
 {
     public LevelSelectorPresenter(LevelSelectorView view, IEventBus eventBus) : base(view, eventBus)
     {
+
     }
     public override void Initialize()
     {
         view.SetLevel(50);
         view.CreateUI();
+        view.OnLevelClicked += HandleLevelClicked;
+    }
+  
+    private void HandleLevelClicked(int levelIndex)
+    {
+        Debug.Log("Clicked Level: " + levelIndex);
+        eventBus.Publish(new Events.OnLoadLevel(levelIndex));
+    }
+    public override void Dispose()
+    {
+        view.OnLevelClicked -= HandleLevelClicked;
     }
 }

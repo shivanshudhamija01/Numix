@@ -22,6 +22,14 @@ public class Events
             this.success = success;
         }
     }
+    public struct OnLoadLevel : IGameEvent
+    {
+        public int levelIndex;
+        public OnLoadLevel(int levelIndex)
+        {
+            this.levelIndex = levelIndex;
+        }
+    }
     public struct OnGameStarted : IGameEvent
     {
         

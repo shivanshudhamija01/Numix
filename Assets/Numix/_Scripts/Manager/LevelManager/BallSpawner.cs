@@ -28,6 +28,7 @@ public class BallSpawner : MonoBehaviour
         {
             return;
         }
-        ballInstance = Instantiate(ballPrefab, clicked.position + Vector3.up, Quaternion.identity);
+        // we can spawn at little above the  tile position by adding the Vector3.up to the clicked position
+        ballInstance = Instantiate(ballPrefab, clicked.position , Quaternion.identity);
     }
 }

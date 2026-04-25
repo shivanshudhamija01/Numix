@@ -5,6 +5,7 @@ using UnityEngine;
 public class GameBootStrapper : MonoBehaviour
 {
     [SerializeField] private AudioInstaller audioInstaller;
+    [SerializeField] private LevelLoader levelLoader;
 
     private IEventBus eventBus;
     void Awake()
@@ -20,5 +21,7 @@ public class GameBootStrapper : MonoBehaviour
 
         ServiceLocator.Register<IUIBootStrap>(new UIBootStrapService(eventBus));
         ServiceLocator.Get<IUIBootStrap>().Initialize();
+
+        levelLoader.Initialize(eventBus);
     }
 }
