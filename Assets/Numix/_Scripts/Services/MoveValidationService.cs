@@ -23,6 +23,7 @@ public class MoveValidationService : IMoveValidationService
 
     public void MapPositionToTile(Dictionary<Vector3, GameObject> dict)
     {
+        previouslyVisitedTiles.Clear();
         tileMap = dict;
     }
 

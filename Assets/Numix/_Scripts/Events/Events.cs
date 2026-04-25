@@ -52,4 +52,7 @@ public class Events
     public struct OnSettingButtonClicked : IGameEvent
     {
     }
+    public struct OnNextLevelLoaded : IGameEvent
+    {
+    }
 }

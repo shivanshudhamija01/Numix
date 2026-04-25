@@ -16,10 +16,12 @@ public class BallSpawner : MonoBehaviour
     void OnEnable()
     {
         eventBus.Subscribe<Events.OnTileClicked>(SpawnBall);
+        eventBus.Subscribe<Events.OnNextLevelLoaded>(OnNextLevelLoaded);
     }
     void OnDisable()
     {
         eventBus.Unsubscribe<Events.OnTileClicked>(SpawnBall);
+        eventBus.Unsubscribe<Events.OnNextLevelLoaded>(OnNextLevelLoaded);
     }
 
     void SpawnBall(Events.OnTileClicked clicked)
@@ -30,6 +32,13 @@ public class BallSpawner : MonoBehaviour
         }
         // we can spawn at little above the  tile position by adding the Vector3.up to the clicked position
         ballInstance = Instantiate(ballPrefab, clicked.position , Quaternion.identity);
+    }
+    private void OnNextLevelLoaded(Events.OnNextLevelLoaded obj)
+    {
+        if (ballInstance != null)
+        {
+            Destroy(ballInstance);
+        }
     }
 }
 

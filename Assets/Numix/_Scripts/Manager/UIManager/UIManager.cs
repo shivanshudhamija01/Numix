@@ -64,6 +64,7 @@ public class UIManager : MonoBehaviour
         eventBus.Subscribe<Events.OnExitButtonClicked>(OnExitButtonClicked);
         eventBus.Subscribe<Events.OnLoadLevel>(OnLevelLoaded);
         eventBus.Subscribe<Events.OnLevelComplete>(OnLevelComplete);
+        eventBus.Subscribe<Events.OnNextLevelLoaded>(OnNextLevelLoaded);
     }
     private void UnSubscribeEvents()
     {
@@ -72,6 +73,7 @@ public class UIManager : MonoBehaviour
         eventBus.Unsubscribe<Events.OnExitButtonClicked>(OnExitButtonClicked);
         eventBus.Unsubscribe<Events.OnLoadLevel>(OnLevelLoaded);
         eventBus.Unsubscribe<Events.OnLevelComplete>(OnLevelComplete);
+        eventBus.Unsubscribe<Events.OnNextLevelLoaded>(OnNextLevelLoaded);  
     }
     private void OnGameStarted(Events.OnGameStarted obj)
     {
@@ -104,5 +106,9 @@ public class UIManager : MonoBehaviour
     private void OnLevelComplete(Events.OnLevelComplete obj)
     {
         winView.Show();
+    }
+    private void OnNextLevelLoaded(Events.OnNextLevelLoaded obj)
+    {
+        winView.Hide();
     }
 }

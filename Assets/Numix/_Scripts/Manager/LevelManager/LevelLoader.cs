@@ -11,12 +11,14 @@ public class LevelLoader : MonoBehaviour
     private IEventBus eventBus;
     private IMoveValidationService moveValidationService;
     private IGridDataService gridDataService;
+    private IGameServices gameServices;
     private Dictionary<Vector3, GameObject> positionToTile = new();
     public void Initialize(IEventBus eventBus)
     {
         this.eventBus = eventBus;
         this.moveValidationService = ServiceLocator.Get<IMoveValidationService>();
         this.gridDataService = ServiceLocator.Get<IGridDataService>();
+        this.gameServices = ServiceLocator.Get<IGameServices>();
         eventBus.Subscribe<Events.OnLoadLevel>(OnLoadLevel);
     }
     private  void OnLoadLevel(Events.OnLoadLevel evt)
@@ -27,16 +29,17 @@ public class LevelLoader : MonoBehaviour
     {
         Debug.Log("Loading Level: " + levelIndex);
         LevelData levelData = Resources.Load<LevelData>($"Levels/Level_{levelIndex}");
-        
+        positionToTile.Clear();
         if(levelData == null)
         {
             Debug.LogError($"Level {levelIndex} not found!");
             return;
         }
         GenerateLevel(levelData);
+        gameServices.CurrentLevel = levelIndex;
         moveValidationService.MapPositionToTile(positionToTile);
         gridDataService.MapTileToPosition(positionToTile);  
-        
+
     }
     private void GenerateLevel(LevelData levelData)
     {

@@ -18,6 +18,7 @@ public class GameBootStrapper : MonoBehaviour
         ServiceLocator.Register<IStepTrackerService>(new StepTrackerService());
         ServiceLocator.Register<IPuzzleValidationService>(new PuzzleValidationService(ServiceLocator.Get<IGridDataService>(), ServiceLocator.Get<IStepTrackerService>(), ServiceLocator.Get<IEventBus>()));
         ServiceLocator.Register<IAudioService>(new AudioService(audioInstaller));
+        ServiceLocator.Register<IGameServices>(new GameService());
 
         ServiceLocator.Register<IUIBootStrap>(new UIBootStrapService(eventBus));
         ServiceLocator.Get<IUIBootStrap>().Initialize();
