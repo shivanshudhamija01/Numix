@@ -50,6 +50,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler, ITile
             }
         }
     }
+    // Here i goin to update the material of tile.
     private void UpdateTileMaterial(Events.OnTileEvaluate evt)
     {
         if (tileNumber <= 0 && evt.position == transform.position)

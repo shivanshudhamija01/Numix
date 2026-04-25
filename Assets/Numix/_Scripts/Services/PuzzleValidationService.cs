@@ -7,20 +7,29 @@ public class PuzzleValidationService : IPuzzleValidationService
     private readonly IGridDataService gridDataService;
     private readonly IStepTrackerService stepTrackerService;
     private readonly IEventBus eventBus;
+    private List<Vector3> numberTilesPositions;
     public PuzzleValidationService(IGridDataService gridDataService, IStepTrackerService stepTrackerService, IEventBus eventBus)
     {
         this.gridDataService = gridDataService;
         this.stepTrackerService = stepTrackerService;
         this.eventBus = eventBus;
+        numberTilesPositions = gridDataService.GetNumberTilesPosition();
     }
     public void EvaluateTile(Vector3 tilePosition)
     {
         int tileNumber = gridDataService.GetTileNumber(tilePosition);
-        // if (tileNumber <= 0)
-        // {
-        //     return;
-        // }
+
         bool success = stepTrackerService.CurrentSteps == tileNumber;
+        if(success)
+        {
+            numberTilesPositions.Remove(tilePosition);
+            if(numberTilesPositions.Count == 0)
+            {
+                Debug.Log("Hurray You win the level");
+                eventBus.Publish(new Events.OnLevelComplete());
+            }
+        }
         eventBus.Publish(new Events.OnTileEvaluate(tilePosition, success));
     }
 }
+

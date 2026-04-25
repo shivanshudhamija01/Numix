@@ -28,8 +28,6 @@ public class MoveValidationService : IMoveValidationService
 
     public void UpdateBallLastPosition(Vector3 position)
     {
-        Debug.Log("Ball last position is : " + currentBallPosition);
-        Debug.Log("Ball current position is : " + position);
         previouslyVisitedTiles.Enqueue(currentBallPosition);
         currentBallPosition = position;
     }

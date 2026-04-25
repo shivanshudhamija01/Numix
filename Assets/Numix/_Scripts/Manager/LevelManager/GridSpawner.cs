@@ -15,7 +15,6 @@ public class GridSpawner : MonoBehaviour
         { 9, 0, 0 }
     };
     private Dictionary<Vector3, GameObject> positionToTile = new();
-    private EventBus eventBus;
     private IMoveValidationService moveValidationService;
     private IGridDataService gridDataService;
     void Awake()

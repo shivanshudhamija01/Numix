@@ -20,6 +20,7 @@ public class BallMotion : MonoBehaviour
     private IPuzzleValidationService puzzleValidationService;
     private IAudioService audioService;
 
+    // Here i have to add a logic so that on game win , need to stop the player from accepting the input services.
     void Awake()
     {
         ballInitialPosition = new Vector3(transform.position.x, 0, transform.position.z);
@@ -37,7 +38,7 @@ public class BallMotion : MonoBehaviour
 
         audioService.PlaySFX(SoundType.d1);
 
-        Debug.Log(inputService == null ? "❌ InputService NULL" : "✅ InputService OK");
+        Debug.Log(inputService == null ? "InputService NULL" : "InputService OK");
     }
 
     void Update()
