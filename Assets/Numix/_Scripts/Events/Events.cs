@@ -55,4 +55,7 @@ public class Events
     public struct OnNextLevelLoaded : IGameEvent
     {
     }
+    public struct OnLevelInitialized : IGameEvent
+    {
+    }
 }

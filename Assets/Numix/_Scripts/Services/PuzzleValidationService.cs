@@ -31,5 +31,17 @@ public class PuzzleValidationService : IPuzzleValidationService
         }
         eventBus.Publish(new Events.OnTileEvaluate(tilePosition, success));
     }
+    public void RefreshTiles()
+    {
+            numberTilesPositions = gridDataService.GetNumberTilesPosition();
+    }
+    public void Initialize(IEventBus eventBus)
+    {
+        eventBus.Subscribe<Events.OnLevelInitialized>(OnLevelInitialized);
+    }
+    private void OnLevelInitialized(Events.OnLevelInitialized obj)
+    {
+        RefreshTiles();
+    }
 }
 

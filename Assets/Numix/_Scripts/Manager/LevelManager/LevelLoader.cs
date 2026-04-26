@@ -12,13 +12,15 @@ public class LevelLoader : MonoBehaviour
     private IMoveValidationService moveValidationService;
     private IGridDataService gridDataService;
     private IGameServices gameServices;
+    private IPuzzleValidationService puzzleValidationService ;
     private Dictionary<Vector3, GameObject> positionToTile = new();
-    public void Initialize(IEventBus eventBus)
+    public void Initialize(IEventBus eventBus, IMoveValidationService moveValidationService, IGridDataService gridDataService, IGameServices gameServices, IPuzzleValidationService puzzleValidationService)
     {
         this.eventBus = eventBus;
-        this.moveValidationService = ServiceLocator.Get<IMoveValidationService>();
-        this.gridDataService = ServiceLocator.Get<IGridDataService>();
-        this.gameServices = ServiceLocator.Get<IGameServices>();
+        this.moveValidationService = moveValidationService;
+        this.gridDataService = gridDataService;
+        this.gameServices = gameServices;
+        this.puzzleValidationService = puzzleValidationService;
         eventBus.Subscribe<Events.OnLoadLevel>(OnLoadLevel);
     }
     private  void OnLoadLevel(Events.OnLoadLevel evt)
@@ -39,7 +41,8 @@ public class LevelLoader : MonoBehaviour
         gameServices.CurrentLevel = levelIndex;
         moveValidationService.MapPositionToTile(positionToTile);
         gridDataService.MapTileToPosition(positionToTile);  
-
+        eventBus.Publish(new Events.OnLevelInitialized());
+    
     }
     private void GenerateLevel(LevelData levelData)
     {

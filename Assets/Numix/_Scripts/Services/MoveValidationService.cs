@@ -8,6 +8,23 @@ public class MoveValidationService : IMoveValidationService
     private Vector3 currentBallPosition;
     private Queue<Vector3> previouslyVisitedTiles = new();
 
+
+    // Here i am going to map the position of the tile to its game object, so 
+    public void MapPositionToTile(Dictionary<Vector3, GameObject> dict)
+    {
+        ClearReferences();
+        tileMap = dict;
+    }
+    public void AssingBallCurrentPosition(Vector3 position)
+    {
+        currentBallPosition = position;
+    }
+
+    public void UpdateBallLastPosition(Vector3 position)
+    {
+        previouslyVisitedTiles.Enqueue(currentBallPosition);
+        currentBallPosition = position;
+    }
     public bool IsValidMove(Vector3 position)
     {
         if (tileMap == null)
@@ -20,22 +37,6 @@ public class MoveValidationService : IMoveValidationService
         }
         return false;
     }
-
-    public void MapPositionToTile(Dictionary<Vector3, GameObject> dict)
-    {
-        previouslyVisitedTiles.Clear();
-        tileMap = dict;
-    }
-
-    public void UpdateBallLastPosition(Vector3 position)
-    {
-        previouslyVisitedTiles.Enqueue(currentBallPosition);
-        currentBallPosition = position;
-    }
-    public void AssingBallCurrentPosition(Vector3 position)
-    {
-        currentBallPosition = position;
-    }
     private bool IsPreviouslyVisited(Vector3 position)
     {
         if (previouslyVisitedTiles.Contains(position))
@@ -43,5 +44,18 @@ public class MoveValidationService : IMoveValidationService
             return true;
         }
         return false;
+    }
+    private void ClearReferences()
+    {
+        previouslyVisitedTiles.Clear();
+        // tileMap.Clear();
+    }
+    public void Initialize(IEventBus eventBus)
+    {
+        eventBus.Subscribe<Events.OnLevelInitialized>(OnLevelInitialized);
+    }
+    private void OnLevelInitialized(Events.OnLevelInitialized obj)
+    {
+        ClearReferences();
     }
 }

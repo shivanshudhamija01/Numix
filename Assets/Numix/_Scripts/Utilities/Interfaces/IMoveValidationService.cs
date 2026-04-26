@@ -8,4 +8,5 @@ public interface IMoveValidationService
     public bool IsValidMove(Vector3 position);
     public void UpdateBallLastPosition(Vector3 position);
     public void AssingBallCurrentPosition(Vector3 position);
+    public void Initialize(IEventBus eventBus);
 }

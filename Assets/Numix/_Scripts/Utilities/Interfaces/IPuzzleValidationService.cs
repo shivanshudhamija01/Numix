@@ -5,4 +5,6 @@ using UnityEngine;
 public interface IPuzzleValidationService
 {
     void EvaluateTile(Vector3 tilePosition);
+    void RefreshTiles();
+    void Initialize(IEventBus eventBus);
 }
