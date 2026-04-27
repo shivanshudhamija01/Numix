@@ -777,6 +777,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tile: {fileID: 5295786729945517564, guid: 523283f3dd51440f3aacf8665595abb1, type: 3}
   stepValue: 1.25
+  startingPoint:
+    x: 0
+    z: 0
+  ballInstance: {fileID: 0}
 --- !u!114 &954892811
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -975,7 +979,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1267677211}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.3104265, y: -5, z: 0}
+  m_LocalPosition: {x: 3.75, y: -5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

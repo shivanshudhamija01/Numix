@@ -16,7 +16,7 @@ public class GameBootStrapper : MonoBehaviour
     private IAudioService audioService;
     private IGameServices gameServices;
     private IUIBootStrap uiBootStrap;
-
+    private IPathHintService pathHintService;
     void Awake()
     {
         RegisterServices();
@@ -52,6 +52,9 @@ public class GameBootStrapper : MonoBehaviour
     var uiBoot = new UIBootStrapService(eventBus);
     ServiceLocator.Register<IUIBootStrap>(uiBoot);
 
+    var pathHintService = new PathHintService();
+    ServiceLocator.Register<IPathHintService>(pathHintService);
+
     this.eventBus = eventBus; 
 }
     private void SetServiceReferences()
@@ -64,6 +67,7 @@ public class GameBootStrapper : MonoBehaviour
         audioService = ServiceLocator.Get<IAudioService>();
         gameServices = ServiceLocator.Get<IGameServices>();
         uiBootStrap = ServiceLocator.Get<IUIBootStrap>();
+        pathHintService = ServiceLocator.Get<IPathHintService>();
     }
     private void InitializeServices()
     {
@@ -72,7 +76,7 @@ public class GameBootStrapper : MonoBehaviour
         puzzleValidationService.Initialize(eventBus);
         gridDataService.Initialize(eventBus);
     
-        levelLoader.Initialize(eventBus, moveValidationService, gridDataService, gameServices, puzzleValidationService);
+        levelLoader.Initialize(eventBus, moveValidationService, gridDataService, gameServices, puzzleValidationService, pathHintService);
 
         uiBootStrap.Initialize();
     }

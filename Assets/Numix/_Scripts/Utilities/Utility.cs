@@ -10,6 +10,11 @@ public class Utility
 [Serializable]
 public class Coordinate
 {
-    public float x;
-    public float z;
+    public int x;
+    public int z;
+    public Coordinate(int x = 0, int z=0)
+    {
+        this.x = x;
+        this.z = z;
+    }
 };

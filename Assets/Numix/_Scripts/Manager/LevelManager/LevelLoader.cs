@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class LevelLoader : MonoBehaviour
@@ -13,14 +14,16 @@ public class LevelLoader : MonoBehaviour
     private IGridDataService gridDataService;
     private IGameServices gameServices;
     private IPuzzleValidationService puzzleValidationService ;
+    private IPathHintService pathHintService;
     private Dictionary<Vector3, GameObject> positionToTile = new();
-    public void Initialize(IEventBus eventBus, IMoveValidationService moveValidationService, IGridDataService gridDataService, IGameServices gameServices, IPuzzleValidationService puzzleValidationService)
+    public void Initialize(IEventBus eventBus, IMoveValidationService moveValidationService, IGridDataService gridDataService, IGameServices gameServices, IPuzzleValidationService puzzleValidationService, IPathHintService pathHintService)
     {
         this.eventBus = eventBus;
         this.moveValidationService = moveValidationService;
         this.gridDataService = gridDataService;
         this.gameServices = gameServices;
         this.puzzleValidationService = puzzleValidationService;
+        this.pathHintService = pathHintService;
         eventBus.Subscribe<Events.OnLoadLevel>(OnLoadLevel);
     }
     private  void OnLoadLevel(Events.OnLoadLevel evt)
@@ -41,6 +44,7 @@ public class LevelLoader : MonoBehaviour
         gameServices.CurrentLevel = levelIndex;
         moveValidationService.MapPositionToTile(positionToTile);
         gridDataService.MapTileToPosition(positionToTile);  
+        pathHintService.Initialize(levelData.solutionPath);
         eventBus.Publish(new Events.OnLevelInitialized());
     
     }
@@ -77,7 +81,9 @@ public class LevelLoader : MonoBehaviour
                 else
                 {
                     obj = Instantiate(numberTilePrefab);
-                    obj.GetComponent<Tile>().TileNumber = tile.number;
+                    Tile cell = obj.GetComponent<Tile>();
+                    cell.TileNumber = tile.number;
+                    cell.index = new Coordinate(x, y);
                 }
 
                 obj.transform.position = pos;
