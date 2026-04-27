@@ -196,7 +196,7 @@ public class LevelDesigner : MonoBehaviour
                 if (tileData == null || tileData.type == TileType.Empty)
                     continue;
 
-                // 🔥 Apply offset so center tile is at (0,0,0)
+                // Apply offset so center tile is at (0,0,0)
                 Vector3 pos = new Vector3(
                     x * spacing - offsetX,
                     0,
