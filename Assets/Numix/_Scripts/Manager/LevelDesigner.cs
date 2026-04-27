@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEditor;
+using System.Collections.Generic;
 
 public class LevelDesigner : MonoBehaviour
 {
@@ -18,6 +19,17 @@ public class LevelDesigner : MonoBehaviour
 
     public LevelData currentLevelData;
 
+    //Solution Path
+    public List<Vector2Int> solutionPath = new List<Vector2Int>();
+
+    void Awake()
+    {
+        Debug.Log("Solution path is : " + solutionPath.Count);
+        for (int i = 0; i < solutionPath.Count; i++)
+        {
+            Debug.Log($"Tile {i}th is at : {solutionPath[i]}");
+        }
+    }
     private void OnValidate()
     {
         if (width <= 0) width = 1;
@@ -28,7 +40,6 @@ public class LevelDesigner : MonoBehaviour
             grid = new TileData[width, height];
         }
 
-        // If size mismatch → resize grid
         if (grid.GetLength(0) != width || grid.GetLength(1) != height)
         {
             TileData[,] newGrid = new TileData[width, height];
@@ -38,20 +49,15 @@ public class LevelDesigner : MonoBehaviour
                 for (int y = 0; y < height; y++)
                 {
                     if (x < grid.GetLength(0) && y < grid.GetLength(1))
-                    {
                         newGrid[x, y] = grid[x, y];
-                    }
                     else
-                    {
                         newGrid[x, y] = new TileData();
-                    }
                 }
             }
 
             grid = newGrid;
         }
 
-        // Ensure no null cells
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
@@ -70,19 +76,16 @@ public class LevelDesigner : MonoBehaviour
     public void LoadOrCreateLevel()
     {
 #if UNITY_EDITOR
-        // Ensure folder exists
         if (!AssetDatabase.IsValidFolder("Assets/Levels"))
         {
             AssetDatabase.CreateFolder("Assets", "Levels");
         }
 
         string path = GetLevelPath();
-
         LevelData data = AssetDatabase.LoadAssetAtPath<LevelData>(path);
 
         if (data == null)
         {
-            // Create new level
             data = ScriptableObject.CreateInstance<LevelData>();
 
             data.width = width;
@@ -90,9 +93,9 @@ public class LevelDesigner : MonoBehaviour
             data.grid = new TileData[width * height];
 
             for (int i = 0; i < data.grid.Length; i++)
-            {
                 data.grid[i] = new TileData();
-            }
+
+            data.solutionPath = new List<Vector2Int>();
 
             AssetDatabase.CreateAsset(data, path);
             AssetDatabase.SaveAssets();
@@ -105,7 +108,6 @@ public class LevelDesigner : MonoBehaviour
         }
 
         currentLevelData = data;
-
         LoadLevel(data);
 #endif
     }
@@ -134,6 +136,9 @@ public class LevelDesigner : MonoBehaviour
                 grid[x, y] = copy;
             }
         }
+
+        // 🔥 NEW: Load path
+        solutionPath = new List<Vector2Int>(data.solutionPath);
     }
 
     public void SaveByLevelNumber()
@@ -165,6 +170,9 @@ public class LevelDesigner : MonoBehaviour
             }
         }
 
+        // 🔥 NEW: Save path
+        currentLevelData.solutionPath = new List<Vector2Int>(solutionPath);
+
         EditorUtility.SetDirty(currentLevelData);
         AssetDatabase.SaveAssets();
 
@@ -183,7 +191,6 @@ public class LevelDesigner : MonoBehaviour
             }
         }
 
-        // Calculate center offset
         float offsetX = (width - 1) * spacing * 0.5f;
         float offsetZ = (height - 1) * spacing * 0.5f;
 
@@ -196,7 +203,6 @@ public class LevelDesigner : MonoBehaviour
                 if (tileData == null || tileData.type == TileType.Empty)
                     continue;
 
-                // Apply offset so center tile is at (0,0,0)
                 Vector3 pos = new Vector3(
                     x * spacing - offsetX,
                     0,

@@ -715,16 +715,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 005c63bebb9c24da581249bda48a9d3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 3
-  height: 5
-  levelNumber: 14
+  width: 2
+  height: 2
+  levelNumber: 1
   numberTilePrefab: {fileID: 5295786729945517564, guid: 523283f3dd51440f3aacf8665595abb1,
     type: 3}
   blockedTilePrefab: {fileID: 5295786729945517564, guid: 523283f3dd51440f3aacf8665595abb1,
     type: 3}
   levelParent: {fileID: 1896751478}
   spacing: 1.25
-  currentLevelData: {fileID: 11400000, guid: 3b2ac15bf395d4807b6e52eef6f75b3b, type: 2}
+  currentLevelData: {fileID: 11400000, guid: 40ed17872700a4490993dc9fce1869db, type: 2}
+  solutionPath:
+  - {x: 1, y: 1}
+  - {x: 1, y: 0}
+  - {x: 0, y: 0}
+  - {x: 0, y: 1}
 --- !u!1 &954892808
 GameObject:
   m_ObjectHideFlags: 0

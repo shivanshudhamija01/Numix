@@ -7,6 +7,8 @@ public class LevelDesignerEditor : Editor
     private TileType selectedType = TileType.Number;
     private int selectedNumber = 1;
 
+    private bool isPathMode = false; // 🔥 NEW
+
     public override void OnInspectorGUI()
     {
         LevelDesigner designer = (LevelDesigner)target;
@@ -15,7 +17,6 @@ public class LevelDesignerEditor : Editor
 
         GUILayout.Space(10);
 
-        // Level number input
         designer.levelNumber = EditorGUILayout.IntField("Level Number", designer.levelNumber);
 
         GUILayout.BeginHorizontal();
@@ -44,6 +45,11 @@ public class LevelDesignerEditor : Editor
         }
 
         GUILayout.Space(10);
+
+        // 🔥 NEW: Path Mode Toggle
+        isPathMode = EditorGUILayout.Toggle("Path Mode", isPathMode);
+
+        GUILayout.Space(10);
         GUILayout.Label("Grid Editor", EditorStyles.boldLabel);
 
         for (int y = designer.height - 1; y >= 0; y--)
@@ -62,12 +68,23 @@ public class LevelDesignerEditor : Editor
 
                 Color oldColor = GUI.backgroundColor;
 
-                if (tile.type == TileType.Blocked)
+                // 🔥 Path highlight
+                if (designer.solutionPath.Contains(new Vector2Int(x, y)))
+                {
+                    GUI.backgroundColor = Color.yellow;
+                }
+                else if (tile.type == TileType.Blocked)
+                {
                     GUI.backgroundColor = Color.red;
+                }
                 else if (tile.type == TileType.Number)
+                {
                     GUI.backgroundColor = Color.green;
+                }
                 else
+                {
                     GUI.backgroundColor = Color.gray;
+                }
 
                 string label = "";
 
@@ -78,12 +95,24 @@ public class LevelDesignerEditor : Editor
 
                 if (GUILayout.Button(label, GUILayout.Width(30), GUILayout.Height(30)))
                 {
-                    tile.type = selectedType;
+                    if (isPathMode)
+                    {
+                        Vector2Int pos = new Vector2Int(x, y);
 
-                    if (selectedType == TileType.Number)
-                        tile.number = selectedNumber;
+                        if (!designer.solutionPath.Contains(pos))
+                            designer.solutionPath.Add(pos);
+                        else
+                            designer.solutionPath.Remove(pos);
+                    }
                     else
-                        tile.number = 0;
+                    {
+                        tile.type = selectedType;
+
+                        if (selectedType == TileType.Number)
+                            tile.number = selectedNumber;
+                        else
+                            tile.number = 0;
+                    }
 
                     EditorUtility.SetDirty(designer);
                 }
