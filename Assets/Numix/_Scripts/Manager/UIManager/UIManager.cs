@@ -16,6 +16,7 @@ public class UIManager : MonoBehaviour
     private GameWinView winView;
     private GameLostView loseView;
     private LevelSelectorView levelSelectorView;
+    private GamePlayView gamePlayView;
     private ViewBase previousPanel;
     private ViewBase currentPanel;
     void Awake()
@@ -50,12 +51,14 @@ public class UIManager : MonoBehaviour
             if (view is GameWinView) winView = (GameWinView)view;
             if (view is GameLostView) loseView = (GameLostView)view;
             if (view is LevelSelectorView) levelSelectorView = (LevelSelectorView)view;
+            if (view is GamePlayView) gamePlayView = (GamePlayView)view;
         }
         levelSelectorView.Hide();
         settingView.Hide();
         pauseView.Hide();
         winView.Hide();
         loseView.Hide();
+        gamePlayView.Hide();
     }
     private void SubscribeEvents()
     {
@@ -73,7 +76,7 @@ public class UIManager : MonoBehaviour
         eventBus.Unsubscribe<Events.OnExitButtonClicked>(OnExitButtonClicked);
         eventBus.Unsubscribe<Events.OnLoadLevel>(OnLevelLoaded);
         eventBus.Unsubscribe<Events.OnLevelComplete>(OnLevelComplete);
-        eventBus.Unsubscribe<Events.OnNextLevelLoaded>(OnNextLevelLoaded);  
+        eventBus.Unsubscribe<Events.OnNextLevelLoaded>(OnNextLevelLoaded);
     }
     private void OnGameStarted(Events.OnGameStarted obj)
     {
@@ -102,6 +105,7 @@ public class UIManager : MonoBehaviour
     {
         levelSelectorView.Hide();
         mainMenuView.Hide();
+        gamePlayView.Show();
     }
     private void OnLevelComplete(Events.OnLevelComplete obj)
     {

@@ -11,12 +11,14 @@ public class UIBootStrapService : IUIBootStrap
     private GameLostView gameLostView;
     private GamePauseView gamePauseView;
     private LevelSelectorView levelSelectorView;
+    private GamePlayView gamePlayView;
     private MainMenuPresenter mainMenuPresenter;
     private SettingPresenter settingPresenter;
     private GameWinPresenter gameWinPresenter;
     private GameLostPresenter gameLostPresenter;
     private GamePausePresenter gamePausePresenter;
     private LevelSelectorPresenter levelSelectorPresenter;
+    private GamePlayPresenter gamePlayPresenter;
     private List<ViewBase> viewBaseList = new List<ViewBase>();
     private List<IPresenter> presenterBaseList = new List<IPresenter>();
 
@@ -50,6 +52,7 @@ public class UIBootStrapService : IUIBootStrap
         gameLostView = new GameLostView();
         gamePauseView = new GamePauseView();
         levelSelectorView = new LevelSelectorView();
+        gamePlayView = new GamePlayView();
     }
     private void InstantiatePresenters()
     {
@@ -59,6 +62,7 @@ public class UIBootStrapService : IUIBootStrap
         gameLostPresenter = new GameLostPresenter(gameLostView, eventBus);
         gamePausePresenter = new GamePausePresenter(gamePauseView, eventBus);
         levelSelectorPresenter = new LevelSelectorPresenter(levelSelectorView, eventBus);
+        gamePlayPresenter = new GamePlayPresenter(gamePlayView, eventBus);
     }
     private void InitializePresenters()
     {
@@ -68,6 +72,7 @@ public class UIBootStrapService : IUIBootStrap
         gameLostPresenter.Initialize();
         gamePausePresenter.Initialize();
         levelSelectorPresenter.Initialize();
+        gamePlayPresenter.Initialize();
     }
     private void AddViewsToList()
     {
@@ -77,6 +82,7 @@ public class UIBootStrapService : IUIBootStrap
         viewBaseList.Add(gameWinView);
         viewBaseList.Add(gamePauseView);
         viewBaseList.Add(levelSelectorView);
+        viewBaseList.Add(gamePlayView);
     }
     private void AddPresenterToList()
     {
@@ -86,6 +92,7 @@ public class UIBootStrapService : IUIBootStrap
         presenterBaseList.Add(gameWinPresenter);
         presenterBaseList.Add(gamePausePresenter);
         presenterBaseList.Add(levelSelectorPresenter);
+        presenterBaseList.Add(gamePlayPresenter);
     }
 
 }
