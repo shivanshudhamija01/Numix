@@ -37,7 +37,7 @@ public class Events
     public struct OnLevelComplete : IGameEvent
     {
     }
-    public struct OnGameLost : IGameEvent
+    public struct OnLevelFailed : IGameEvent
     {
     }
     public struct OnGamePaused : IGameEvent

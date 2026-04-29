@@ -219,9 +219,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileNumberText: {fileID: 5295786728030920701}
-  black: {fileID: 2100000, guid: 26df018b3d51d4073803df8b600e526f, type: 2}
+  visitedTile: {fileID: 2100000, guid: 26df018b3d51d4073803df8b600e526f, type: 2}
   red: {fileID: 2100000, guid: bcfbcc3eabfe445e4969971ccef7ef24, type: 2}
   green: {fileID: 2100000, guid: 6e5f0225ea1574843883f6ef97982867, type: 2}
+  emissionYellow: {fileID: 2100000, guid: 15329d7ea6839b6408e0ed65f3cbac2d, type: 2}
+  emissionBlue: {fileID: 2100000, guid: a90a6834dc31f445183571b39fe7c90d, type: 2}
   tileRenderer: {fileID: 4199605301574883797}
 --- !u!1001 &5295786728252878885
 PrefabInstance:

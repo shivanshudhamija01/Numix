@@ -29,6 +29,10 @@ public class PuzzleValidationService : IPuzzleValidationService
                 eventBus.Publish(new Events.OnLevelComplete());
             }
         }
+        else
+        {
+            // eventBus.Publish(new Events.OnLevelFailed());
+        }
         eventBus.Publish(new Events.OnTileEvaluate(tilePosition, success));
     }
     public void RefreshTiles()

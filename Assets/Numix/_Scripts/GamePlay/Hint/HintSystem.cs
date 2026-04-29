@@ -15,20 +15,18 @@ public class HintSystem : MonoBehaviour
     private void OnEnable()
     {
         eventBus.Subscribe<Events.OnHintRequested>(OnHintRequested);
-        // eventBus.Subscribe<Events.OnHintModeStarted>();
-        // eventBus.Subscribe<Events.OnHintUsed>();
-        // eventBus.Subscribe<Events.OnHintModeEnded>();
+        eventBus.Subscribe<Events.OnHintUsed>(OnHintUsed);
     }
     private void OnDisable()
     {
         eventBus.Unsubscribe<Events.OnHintRequested>(OnHintRequested);
-        // eventBus.Unsubscribe<Events.OnHintModeStarted>();
-        // eventBus.Unsubscribe<Events.OnHintUsed>();
-        // eventBus.Unsubscribe<Events.OnHintModeEnded>();
+        eventBus.Unsubscribe<Events.OnHintUsed>(OnHintUsed);
     }
     private void OnHintRequested(Events.OnHintRequested evt)
     {
-        bool isHintActive = !hintService.IsHintActive;
+        hintService.IsHintActive = !hintService.IsHintActive;
+        bool isHintActive = hintService.IsHintActive;
+        // Here also check that whether there are number of hint available or not 
         if (isHintActive)
         {
             eventBus.Publish(new Events.OnHintModeStarted());
@@ -38,5 +36,10 @@ public class HintSystem : MonoBehaviour
             eventBus.Publish(new Events.OnHintModeEnded());
         }
     }
-
+    private void OnHintUsed(Events.OnHintUsed evt)
+    {
+        // here decrease the number of available hint to the user and also fire an event to disable the glow
+        hintService.IsHintActive = false;
+        eventBus.Publish(new Events.OnHintModeEnded());
+    }   
 }

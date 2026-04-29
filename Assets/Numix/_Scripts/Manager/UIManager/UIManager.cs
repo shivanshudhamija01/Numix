@@ -119,6 +119,7 @@ public class UIManager : MonoBehaviour
         eventBus.Subscribe<Events.OnGamePaused>(OnPauseButtonClicked);
         eventBus.Subscribe<Events.OnHomeClicked>(ReturnToHome);
         eventBus.Subscribe<Events.OnLevelRestart>(OnLevelReload);
+        eventBus.Subscribe<Events.OnLevelFailed>(OnLevelFailed);
     }
 
     private void UnSubscribeEvents()
@@ -132,6 +133,7 @@ public class UIManager : MonoBehaviour
         eventBus.Unsubscribe<Events.OnGamePaused>(OnPauseButtonClicked);
         eventBus.Unsubscribe<Events.OnHomeClicked>(ReturnToHome);
         eventBus.Unsubscribe<Events.OnLevelRestart>(OnLevelReload);
+        eventBus.Unsubscribe<Events.OnLevelFailed>(OnLevelFailed);
     }
 
     // 🎮 EVENTS
@@ -184,5 +186,9 @@ public class UIManager : MonoBehaviour
     private void OnLevelReload(Events.OnLevelRestart evt)
     {
         SwitchPanel(gamePlayView);
+    }
+    private void  OnLevelFailed(Events.OnLevelFailed evt)
+    {
+        SwitchPanel(loseView);
     }
 }
