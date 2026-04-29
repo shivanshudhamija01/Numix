@@ -17,6 +17,7 @@ public class GameBootStrapper : MonoBehaviour
     private IGameServices gameServices;
     private IUIBootStrap uiBootStrap;
     private IPathHintService pathHintService;
+    private IHintService hintService;
     void Awake()
     {
         RegisterServices();
@@ -24,42 +25,45 @@ public class GameBootStrapper : MonoBehaviour
         InitializeServices();
     }
     private void RegisterServices()
-{
-    var eventBus = new EventBus();
-    ServiceLocator.Register<IEventBus>(eventBus);
+    {
+        var eventBus = new EventBus();
+        ServiceLocator.Register<IEventBus>(eventBus);
 
-    var inputService = new InputService();
-    ServiceLocator.Register<IInputService>(inputService);
+        var inputService = new InputService();
+        ServiceLocator.Register<IInputService>(inputService);
 
-    var moveValidation = new MoveValidationService();
-    ServiceLocator.Register<IMoveValidationService>(moveValidation);
+        var moveValidation = new MoveValidationService();
+        ServiceLocator.Register<IMoveValidationService>(moveValidation);
 
-    var gridData = new GridDataService();
-    ServiceLocator.Register<IGridDataService>(gridData);
+        var gridData = new GridDataService();
+        ServiceLocator.Register<IGridDataService>(gridData);
 
-    var stepTracker = new StepTrackerService();
-    ServiceLocator.Register<IStepTrackerService>(stepTracker);
+        var stepTracker = new StepTrackerService();
+        ServiceLocator.Register<IStepTrackerService>(stepTracker);
 
-    var puzzleValidation = new PuzzleValidationService(gridData, stepTracker, eventBus);
-    ServiceLocator.Register<IPuzzleValidationService>(puzzleValidation);
+        var puzzleValidation = new PuzzleValidationService(gridData, stepTracker, eventBus);
+        ServiceLocator.Register<IPuzzleValidationService>(puzzleValidation);
 
-    var audio = new AudioService(audioInstaller);
-    ServiceLocator.Register<IAudioService>(audio);
+        var audio = new AudioService(audioInstaller);
+        ServiceLocator.Register<IAudioService>(audio);
 
-    var gameService = new GameService();
-    ServiceLocator.Register<IGameServices>(gameService);
+        var gameService = new GameService();
+        ServiceLocator.Register<IGameServices>(gameService);
 
-    var uiBoot = new UIBootStrapService(eventBus);
-    ServiceLocator.Register<IUIBootStrap>(uiBoot);
+        var uiBoot = new UIBootStrapService(eventBus);
+        ServiceLocator.Register<IUIBootStrap>(uiBoot);
 
-    var pathHintService = new PathHintService();
-    ServiceLocator.Register<IPathHintService>(pathHintService);
+        var pathHintService = new PathHintService();
+        ServiceLocator.Register<IPathHintService>(pathHintService);
 
-    this.eventBus = eventBus; 
-}
+        var hintService = new HintService();
+        ServiceLocator.Register<IHintService>(hintService);
+
+        this.eventBus = eventBus;
+    }
     private void SetServiceReferences()
     {
-        inputService = ServiceLocator.Get<IInputService>();     
+        inputService = ServiceLocator.Get<IInputService>();
         moveValidationService = ServiceLocator.Get<IMoveValidationService>();
         gridDataService = ServiceLocator.Get<IGridDataService>();
         stepTrackerService = ServiceLocator.Get<IStepTrackerService>();
@@ -68,6 +72,7 @@ public class GameBootStrapper : MonoBehaviour
         gameServices = ServiceLocator.Get<IGameServices>();
         uiBootStrap = ServiceLocator.Get<IUIBootStrap>();
         pathHintService = ServiceLocator.Get<IPathHintService>();
+        hintService = ServiceLocator.Get<IHintService>();
     }
     private void InitializeServices()
     {
@@ -75,7 +80,7 @@ public class GameBootStrapper : MonoBehaviour
         stepTrackerService.Initialize(eventBus);
         puzzleValidationService.Initialize(eventBus);
         gridDataService.Initialize(eventBus);
-    
+
         levelLoader.Initialize(eventBus, moveValidationService, gridDataService, gameServices, puzzleValidationService, pathHintService);
 
         uiBootStrap.Initialize();

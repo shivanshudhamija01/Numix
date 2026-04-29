@@ -12,7 +12,7 @@ public class GamePlayPresenter : PresenterBase<GamePlayView>
         view.CreateUI();
         view.OnHintButton(() =>
         {
-            Debug.Log("Hint Button clicked");
+            eventBus.Publish(new Events.OnHintRequested());
         });
         view.OnPauseButton(() =>
         {

@@ -63,4 +63,10 @@ public class Events
     {
 
     }
+    #region  HINT SYSTEM
+    public struct OnHintRequested : IGameEvent { }
+    public struct OnHintModeStarted : IGameEvent { }
+    public struct OnHintUsed : IGameEvent { }
+    public struct OnHintModeEnded : IGameEvent { }
+    #endregion
 }

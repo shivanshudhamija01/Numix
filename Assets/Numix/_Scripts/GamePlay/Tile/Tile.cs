@@ -16,6 +16,7 @@ public class Tile : MonoBehaviour, IPointerClickHandler, ITile
     private Coordinate tileIndex;
     private EventBus eventBus;
     private IPathHintService pathHintService;
+    private bool isNumberedTile;
     private void Awake()
     {
         eventBus = ServiceLocator.Get<IEventBus>() as EventBus;
@@ -36,14 +37,14 @@ public class Tile : MonoBehaviour, IPointerClickHandler, ITile
         Debug.Log("Coordinate of tile is : " + tileIndex.x + " " + tileIndex.z);
         eventBus.Publish(new Events.OnTileClicked(transform.position));
         int hintIndex = pathHintService.GetHintIndex(tileIndex);
-        if(hintIndex > 0)
+        if (hintIndex > 0)
         {
             tileNumberText.text = hintIndex.ToString();
             tileNumberText.gameObject.SetActive(true);
         }
         else
         {
-            
+
         }
     }
 
