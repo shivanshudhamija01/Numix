@@ -17,42 +17,51 @@ public class UIManager : MonoBehaviour
     private GameLostView loseView;
     private LevelSelectorView levelSelectorView;
     private GamePlayView gamePlayView;
-    private ViewBase previousPanel;
+
+    // 🔥 STACK BASED NAVIGATION
+    private Stack<ViewBase> panelStack = new Stack<ViewBase>();
     private ViewBase currentPanel;
+
     void Awake()
     {
         uiBootStrap = ServiceLocator.Get<IUIBootStrap>();
         presenterList = uiBootStrap.GetPresenterList();
         viewList = uiBootStrap.GetViewsList();
         eventBus = ServiceLocator.Get<IEventBus>();
-        previousPanel = mainMenuView;
-        currentPanel = mainMenuView;
+
         CacheViews();
+
+        currentPanel = mainMenuView;
+        panelStack.Clear();
     }
+
     void OnEnable()
     {
         SubscribeEvents();
     }
+
     void OnDisable()
     {
         UnSubscribeEvents();
     }
 
-
-
     private void CacheViews()
     {
         Debug.Log("Caching Views in UIManager");
+
         foreach (var view in viewList)
         {
             if (view is MainMenuView) mainMenuView = (MainMenuView)view;
-            if (view is SettingView) settingView = (SettingView)view;
-            if (view is GamePauseView) pauseView = (GamePauseView)view;
-            if (view is GameWinView) winView = (GameWinView)view;
-            if (view is GameLostView) loseView = (GameLostView)view;
-            if (view is LevelSelectorView) levelSelectorView = (LevelSelectorView)view;
-            if (view is GamePlayView) gamePlayView = (GamePlayView)view;
+            else if (view is SettingView) settingView = (SettingView)view;
+            else if (view is GamePauseView) pauseView = (GamePauseView)view;
+            else if (view is GameWinView) winView = (GameWinView)view;
+            else if (view is GameLostView) loseView = (GameLostView)view;
+            else if (view is LevelSelectorView) levelSelectorView = (LevelSelectorView)view;
+            else if (view is GamePlayView) gamePlayView = (GamePlayView)view;
         }
+
+        // Default state
+        mainMenuView.Show();
         levelSelectorView.Hide();
         settingView.Hide();
         pauseView.Hide();
@@ -60,6 +69,45 @@ public class UIManager : MonoBehaviour
         loseView.Hide();
         gamePlayView.Hide();
     }
+
+    // 🔥 PUSH PANEL
+    private void SwitchPanel(ViewBase targetPanel)
+    {
+        if (targetPanel == null)
+        {
+            Debug.LogWarning("Target panel is null!");
+            return;
+        }
+
+        if (currentPanel == targetPanel)
+            return;
+
+        if (currentPanel != null)
+        {
+            panelStack.Push(currentPanel);
+            currentPanel.Hide();
+        }
+
+        currentPanel = targetPanel;
+        currentPanel.Show();
+    }
+
+    // 🔙 POP PANEL
+    private void GoBack()
+    {
+        if (panelStack.Count == 0)
+        {
+            Debug.Log("No previous panel in stack");
+            return;
+        }
+
+        if (currentPanel != null)
+            currentPanel.Hide();
+
+        currentPanel = panelStack.Pop();
+        currentPanel.Show();
+    }
+
     private void SubscribeEvents()
     {
         eventBus.Subscribe<Events.OnGameStarted>(OnGameStarted);
@@ -68,7 +116,11 @@ public class UIManager : MonoBehaviour
         eventBus.Subscribe<Events.OnLoadLevel>(OnLevelLoaded);
         eventBus.Subscribe<Events.OnLevelComplete>(OnLevelComplete);
         eventBus.Subscribe<Events.OnNextLevelLoaded>(OnNextLevelLoaded);
+        eventBus.Subscribe<Events.OnGamePaused>(OnPauseButtonClicked);
+        eventBus.Subscribe<Events.OnHomeClicked>(ReturnToHome);
+        eventBus.Subscribe<Events.OnLevelRestart>(OnLevelReload);
     }
+
     private void UnSubscribeEvents()
     {
         eventBus.Unsubscribe<Events.OnGameStarted>(OnGameStarted);
@@ -77,42 +129,60 @@ public class UIManager : MonoBehaviour
         eventBus.Unsubscribe<Events.OnLoadLevel>(OnLevelLoaded);
         eventBus.Unsubscribe<Events.OnLevelComplete>(OnLevelComplete);
         eventBus.Unsubscribe<Events.OnNextLevelLoaded>(OnNextLevelLoaded);
+        eventBus.Unsubscribe<Events.OnGamePaused>(OnPauseButtonClicked);
+        eventBus.Unsubscribe<Events.OnHomeClicked>(ReturnToHome);
+        eventBus.Unsubscribe<Events.OnLevelRestart>(OnLevelReload);
     }
+
+    // 🎮 EVENTS
+
     private void OnGameStarted(Events.OnGameStarted obj)
     {
-        mainMenuView.Hide();
-        levelSelectorView.Show();
-        settingView.Hide();
-        pauseView.Hide();
-        winView.Hide();
-        loseView.Hide();
+        SwitchPanel(levelSelectorView);
     }
+
     private void OnSettingButtonClicked(Events.OnSettingButtonClicked obj)
     {
-        previousPanel = mainMenuView;
-        currentPanel = settingView;
-        mainMenuView.Hide();
-        settingView.Show();
+        SwitchPanel(settingView);
     }
+
     private void OnExitButtonClicked(Events.OnExitButtonClicked obj)
     {
-        settingView.Hide();
-        previousPanel.Show();
-        previousPanel = settingView;
-        currentPanel = mainMenuView;
+        GoBack();
     }
+
     private void OnLevelLoaded(Events.OnLoadLevel obj)
     {
-        levelSelectorView.Hide();
-        mainMenuView.Hide();
-        gamePlayView.Show();
+        SwitchPanel(gamePlayView);
     }
+
     private void OnLevelComplete(Events.OnLevelComplete obj)
     {
-        winView.Show();
+        SwitchPanel(winView);
     }
+
     private void OnNextLevelLoaded(Events.OnNextLevelLoaded obj)
     {
-        winView.Hide();
+        SwitchPanel(gamePlayView);
+    }
+
+    private void OnPauseButtonClicked(Events.OnGamePaused obj)
+    {
+        SwitchPanel(pauseView);
+    }
+
+    private void ReturnToHome(Events.OnHomeClicked obj)
+    {
+        panelStack.Clear();
+
+        if (currentPanel != null)
+            currentPanel.Hide();
+
+        currentPanel = mainMenuView;
+        currentPanel.Show();
+    }
+    private void OnLevelReload(Events.OnLevelRestart evt)
+    {
+        SwitchPanel(gamePlayView);
     }
 }

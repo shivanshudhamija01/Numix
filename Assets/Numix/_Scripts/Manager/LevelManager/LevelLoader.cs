@@ -13,7 +13,7 @@ public class LevelLoader : MonoBehaviour
     private IMoveValidationService moveValidationService;
     private IGridDataService gridDataService;
     private IGameServices gameServices;
-    private IPuzzleValidationService puzzleValidationService ;
+    private IPuzzleValidationService puzzleValidationService;
     private IPathHintService pathHintService;
     private Dictionary<Vector3, GameObject> positionToTile = new();
     public void Initialize(IEventBus eventBus, IMoveValidationService moveValidationService, IGridDataService gridDataService, IGameServices gameServices, IPuzzleValidationService puzzleValidationService, IPathHintService pathHintService)
@@ -25,17 +25,23 @@ public class LevelLoader : MonoBehaviour
         this.puzzleValidationService = puzzleValidationService;
         this.pathHintService = pathHintService;
         eventBus.Subscribe<Events.OnLoadLevel>(OnLoadLevel);
+        eventBus.Subscribe<Events.OnLevelRestart>(OnLevelRestart);
     }
-    private  void OnLoadLevel(Events.OnLoadLevel evt)
-    {   
+    private void OnLoadLevel(Events.OnLoadLevel evt)
+    {
         LoadLevel(evt.levelIndex);
+    }
+    private void OnLevelRestart(Events.OnLevelRestart obj)
+    {
+        int currentLevel = gameServices.CurrentLevel;
+        LoadLevel(currentLevel);
     }
     private void LoadLevel(int levelIndex)
     {
         Debug.Log("Loading Level: " + levelIndex);
         LevelData levelData = Resources.Load<LevelData>($"Levels/Level_{levelIndex}");
         positionToTile.Clear();
-        if(levelData == null)
+        if (levelData == null)
         {
             Debug.LogError($"Level {levelIndex} not found!");
             return;
@@ -43,14 +49,14 @@ public class LevelLoader : MonoBehaviour
         GenerateLevel(levelData);
         gameServices.CurrentLevel = levelIndex;
         moveValidationService.MapPositionToTile(positionToTile);
-        gridDataService.MapTileToPosition(positionToTile);  
+        gridDataService.MapTileToPosition(positionToTile);
         pathHintService.Initialize(levelData.solutionPath);
         eventBus.Publish(new Events.OnLevelInitialized());
-    
+
     }
     private void GenerateLevel(LevelData levelData)
     {
-        foreach(Transform child in levelParent)
+        foreach (Transform child in levelParent)
         {
             Destroy(child.gameObject);
         }

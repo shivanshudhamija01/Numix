@@ -16,7 +16,7 @@ public class GamePlayPresenter : PresenterBase<GamePlayView>
         });
         view.OnPauseButton(() =>
         {
-            Debug.Log("Pause Button clicked");
+            eventBus.Publish(new Events.OnGamePaused());
         });
     }
 }

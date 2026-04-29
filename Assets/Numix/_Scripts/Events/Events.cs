@@ -32,20 +32,18 @@ public class Events
     }
     public struct OnGameStarted : IGameEvent
     {
-        
-    }   
+
+    }
     public struct OnLevelComplete : IGameEvent
     {
     }
     public struct OnGameLost : IGameEvent
     {
     }
-     public struct OnGamePaused : IGameEvent
+    public struct OnGamePaused : IGameEvent
     {
     }
-     public struct OnGameResumed : IGameEvent
-    {
-    }
+
     public struct OnExitButtonClicked : IGameEvent
     {
     }
@@ -57,5 +55,12 @@ public class Events
     }
     public struct OnLevelInitialized : IGameEvent
     {
+    }
+    public struct OnHomeClicked : IGameEvent
+    {
+    }
+    public struct OnLevelRestart : IGameEvent
+    {
+
     }
 }
