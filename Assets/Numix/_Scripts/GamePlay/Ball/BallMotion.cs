@@ -22,11 +22,6 @@ public class BallMotion : MonoBehaviour
     private IPuzzleValidationService puzzleValidationService;
     private IAudioService audioService;
     private IEventBus eventBus;
-    private Action<Events.OnLevelComplete> levelCompleteHandler;
-    private Action<Events.OnSettingButtonClicked> settingHandler;
-    private Action<Events.OnLevelFailed> failedHandler;
-    private Action<Events.OnExitButtonClicked> exitHandler;
-    private Action<Events.OnGamePaused> gamePauseHandler;
 
     // Here i have to add a logic so that on game win , need to stop the player from accepting the input services.
     void Awake()
@@ -49,25 +44,11 @@ public class BallMotion : MonoBehaviour
     }
     private void OnEnable()
     {
-        levelCompleteHandler = _ => DisableMovement();
-        settingHandler = _ => DisableMovement();
-        failedHandler = _ => DisableMovement();
-        exitHandler = _ => EnableMovement();
-        gamePauseHandler = _ => DisableMovement();
-
-        eventBus.Subscribe<Events.OnLevelComplete>(levelCompleteHandler);
-        eventBus.Subscribe<Events.OnSettingButtonClicked>(settingHandler);
-        eventBus.Subscribe<Events.OnLevelFailed>(failedHandler);
-        eventBus.Subscribe<Events.OnExitButtonClicked>(exitHandler);
-        eventBus.Subscribe<Events.OnGamePaused>(gamePauseHandler);
+        eventBus.Subscribe<Events.OnMovementStateChanged>(OnGameStateChange);
     }
     private void OnDisable()
     {
-        eventBus.Unsubscribe<Events.OnLevelComplete>(levelCompleteHandler);
-        eventBus.Unsubscribe<Events.OnSettingButtonClicked>(settingHandler);
-        eventBus.Unsubscribe<Events.OnLevelFailed>(failedHandler);
-        eventBus.Unsubscribe<Events.OnExitButtonClicked>(exitHandler);
-        eventBus.Unsubscribe<Events.OnGamePaused>(gamePauseHandler);
+        eventBus.Unsubscribe<Events.OnMovementStateChanged>(OnGameStateChange);
     }
     void Update()
     {
@@ -151,13 +132,10 @@ public class BallMotion : MonoBehaviour
         oscillationTime = 0f;
         isMoving = false;
     }
+    private void OnGameStateChange(Events.OnMovementStateChanged evt)
+    {
+        canMove = evt.CanMove;
+        Debug.Log(canMove);
+    }
 
-    private void DisableMovement()
-    {
-        canMove = false;
-    }
-    private void EnableMovement()
-    {
-        canMove = true;
-    }
 }

@@ -51,8 +51,10 @@ public class BallSpawner : MonoBehaviour
     {
         if (ballInstance != null)
         {
+            isGamePaused = false;
             Destroy(ballInstance);
         }
+        isGamePaused = false;
     }
     private void OnGamePaused(Events.OnGamePaused evt)
     {

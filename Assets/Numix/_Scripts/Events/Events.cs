@@ -63,6 +63,10 @@ public class Events
     {
 
     }
+    public struct OnMovementStateChanged : IGameEvent
+    {
+        public bool CanMove;
+    }
     #region  HINT SYSTEM
     public struct OnHintRequested : IGameEvent { }
     public struct OnHintModeStarted : IGameEvent { }

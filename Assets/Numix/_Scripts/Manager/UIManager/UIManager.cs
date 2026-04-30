@@ -34,6 +34,8 @@ public class UIManager : MonoBehaviour
 
         currentPanel = mainMenuView;
         panelStack.Clear();
+
+        eventBus.Publish(new Events.OnMovementStateChanged { CanMove = false });
     }
 
     void OnEnable()
@@ -70,7 +72,7 @@ public class UIManager : MonoBehaviour
         gamePlayView.Hide();
     }
 
-    // 🔥 PUSH PANEL
+    // PUSH PANEL
     private void SwitchPanel(ViewBase targetPanel)
     {
         if (targetPanel == null)
@@ -90,6 +92,10 @@ public class UIManager : MonoBehaviour
 
         currentPanel = targetPanel;
         currentPanel.Show();
+
+        bool canMove = currentPanel == gamePlayView;
+
+        eventBus.Publish(new Events.OnMovementStateChanged { CanMove = canMove });
     }
 
     // 🔙 POP PANEL
