@@ -7,7 +7,7 @@ public class BallSpawner : MonoBehaviour
     [SerializeField] private GameObject ballPrefab;
     private GameObject ballInstance;
     private EventBus eventBus;
-
+    private bool isGamePaused;
     private void Awake()
     {
         eventBus = ServiceLocator.Get<IEventBus>() as EventBus;
@@ -18,16 +18,21 @@ public class BallSpawner : MonoBehaviour
         eventBus.Subscribe<Events.OnTileClicked>(SpawnBall);
         eventBus.Subscribe<Events.OnLevelInitialized>(OnLevelInitialized);
         eventBus.Subscribe<Events.OnHomeClicked>(ResetBall);
+        eventBus.Subscribe<Events.OnGamePaused>(OnGamePaused);
+        eventBus.Subscribe<Events.OnExitButtonClicked>(OnGameResumed);
     }
     void OnDisable()
     {
         eventBus.Unsubscribe<Events.OnTileClicked>(SpawnBall);
         eventBus.Unsubscribe<Events.OnLevelInitialized>(OnLevelInitialized);
         eventBus.Unsubscribe<Events.OnHomeClicked>(ResetBall);
+        eventBus.Unsubscribe<Events.OnGamePaused>(OnGamePaused);
+        eventBus.Unsubscribe<Events.OnExitButtonClicked>(OnGameResumed);
     }
 
     void SpawnBall(Events.OnTileClicked clicked)
     {
+        if (isGamePaused) return;
         if (ballInstance != null)
         {
             return;
@@ -48,6 +53,14 @@ public class BallSpawner : MonoBehaviour
         {
             Destroy(ballInstance);
         }
+    }
+    private void OnGamePaused(Events.OnGamePaused evt)
+    {
+        isGamePaused = true;
+    }
+    private void OnGameResumed(Events.OnExitButtonClicked evt)
+    {
+        isGamePaused = false;
     }
 }
 

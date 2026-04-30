@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
+    [SerializeField] private float popUpDelay = 1f;
     private IUIBootStrap uiBootStrap;
     private List<IPresenter> presenterList;
     private List<ViewBase> viewList;
@@ -159,7 +160,7 @@ public class UIManager : MonoBehaviour
 
     private void OnLevelComplete(Events.OnLevelComplete obj)
     {
-        SwitchPanel(winView);
+        StartCoroutine(ShowPanelWithDelay(winView, popUpDelay));
     }
 
     private void OnNextLevelLoaded(Events.OnNextLevelLoaded obj)
@@ -188,6 +189,11 @@ public class UIManager : MonoBehaviour
     }
     private void OnLevelFailed(Events.OnLevelFailed evt)
     {
-        SwitchPanel(loseView);
+        StartCoroutine(ShowPanelWithDelay(loseView, popUpDelay));
+    }
+    private IEnumerator ShowPanelWithDelay(ViewBase panel, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        SwitchPanel(panel);
     }
 }
