@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class SettingPresenter : PresenterBase<SettingView>
 {
-    public SettingPresenter(SettingView view, IEventBus eventBus) : base(view, eventBus)
+    public SettingPresenter(SettingView view, IEventBus eventBus, IAudioService audioService) : base(view, eventBus, audioService)
     {
 
     }
@@ -11,8 +11,8 @@ public class SettingPresenter : PresenterBase<SettingView>
         view.CreateUI();
         view.OnExit(() =>
         {
+            audioService.PlaySFX(SoundType.click);
             eventBus.Publish(new Events.OnExitButtonClicked());
-            Debug.Log("Exit button is clicked");
         });
     }
 }

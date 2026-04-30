@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GamePlayPresenter : PresenterBase<GamePlayView>
 {
-    public GamePlayPresenter(GamePlayView view, IEventBus eventBus) : base(view, eventBus)
+    public GamePlayPresenter(GamePlayView view, IEventBus eventBus, IAudioService audioService) : base(view, eventBus, audioService)
     {
     }
     public override void Initialize()
@@ -12,10 +12,12 @@ public class GamePlayPresenter : PresenterBase<GamePlayView>
         view.CreateUI();
         view.OnHintButton(() =>
         {
+            audioService.PlaySFX(SoundType.click);
             eventBus.Publish(new Events.OnHintRequested());
         });
         view.OnPauseButton(() =>
         {
+            audioService.PlaySFX(SoundType.click);
             eventBus.Publish(new Events.OnGamePaused());
         });
     }

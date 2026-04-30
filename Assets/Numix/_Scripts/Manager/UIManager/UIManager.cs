@@ -47,7 +47,6 @@ public class UIManager : MonoBehaviour
 
     private void CacheViews()
     {
-        Debug.Log("Caching Views in UIManager");
 
         foreach (var view in viewList)
         {
@@ -187,7 +186,7 @@ public class UIManager : MonoBehaviour
     {
         SwitchPanel(gamePlayView);
     }
-    private void  OnLevelFailed(Events.OnLevelFailed evt)
+    private void OnLevelFailed(Events.OnLevelFailed evt)
     {
         SwitchPanel(loseView);
     }

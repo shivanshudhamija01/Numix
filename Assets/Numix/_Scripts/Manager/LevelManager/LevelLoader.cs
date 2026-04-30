@@ -26,6 +26,7 @@ public class LevelLoader : MonoBehaviour
         this.pathHintService = pathHintService;
         eventBus.Subscribe<Events.OnLoadLevel>(OnLoadLevel);
         eventBus.Subscribe<Events.OnLevelRestart>(OnLevelRestart);
+        eventBus.Subscribe<Events.OnHomeClicked>(ResetLevel);
     }
     private void OnLoadLevel(Events.OnLoadLevel evt)
     {
@@ -38,7 +39,6 @@ public class LevelLoader : MonoBehaviour
     }
     private void LoadLevel(int levelIndex)
     {
-        Debug.Log("Loading Level: " + levelIndex);
         LevelData levelData = Resources.Load<LevelData>($"Levels/Level_{levelIndex}");
         positionToTile.Clear();
         if (levelData == null)
@@ -47,6 +47,7 @@ public class LevelLoader : MonoBehaviour
             return;
         }
         GenerateLevel(levelData);
+        Camera.main.orthographicSize = levelData.CameraFOV;
         gameServices.CurrentLevel = levelIndex;
         moveValidationService.MapPositionToTile(positionToTile);
         gridDataService.MapTileToPosition(positionToTile);
@@ -101,5 +102,12 @@ public class LevelLoader : MonoBehaviour
     public void OnDestroy()
     {
         eventBus.Unsubscribe<Events.OnLoadLevel>(OnLoadLevel);
+    }
+    private void ResetLevel(Events.OnHomeClicked evt)
+    {
+        foreach (Transform child in levelParent)
+        {
+            Destroy(child.gameObject);
+        }
     }
 }

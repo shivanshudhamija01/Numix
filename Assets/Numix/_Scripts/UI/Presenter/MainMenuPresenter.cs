@@ -5,7 +5,7 @@ using UnityEngine;
 public class MainMenuPresenter : PresenterBase<MainMenuView>
 {
 
-    public MainMenuPresenter(MainMenuView view, IEventBus eventBus) : base(view, eventBus)
+    public MainMenuPresenter(MainMenuView view, IEventBus eventBus, IAudioService audioService) : base(view, eventBus, audioService)
     {
 
     }
@@ -14,17 +14,18 @@ public class MainMenuPresenter : PresenterBase<MainMenuView>
         view.CreateUI();
         view.OnPlay(() =>
         {
+            audioService.PlaySFX(SoundType.click);
             eventBus.Publish(new Events.OnGameStarted());
-            Debug.Log("Play button is clicked");
         });
         view.OnQuit(() =>
         {
-            Debug.Log("Quit Game");
+            audioService.PlaySFX(SoundType.click);
+            Application.Quit();
         });
         view.OnSetting(() =>
         {
+            audioService.PlaySFX(SoundType.click);
             eventBus.Publish(new Events.OnSettingButtonClicked());
-            Debug.Log("Setting button is clicked");
         });
     }
 }

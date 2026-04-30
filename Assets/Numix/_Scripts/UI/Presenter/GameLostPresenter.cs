@@ -4,17 +4,22 @@ using UnityEngine;
 
 public class GameLostPresenter : PresenterBase<GameLostView>
 {
-    public GameLostPresenter(GameLostView view, IEventBus eventBus) : base(view, eventBus)
+    public GameLostPresenter(GameLostView view, IEventBus eventBus, IAudioService audioService) : base(view, eventBus, audioService)
     {
 
     }
     public override void Initialize()
     {
         view.CreateUI();
-        view.OnRestart(() => { Debug.Log("Restart the level"); });
+        view.OnRestart(() =>
+        {
+            audioService.PlaySFX(SoundType.click);
+            eventBus.Publish(new Events.OnLevelRestart());
+        });
         view.OnHome(() =>
         {
-            Debug.Log("Home button is clicked");
+            audioService.PlaySFX(SoundType.click);
+            eventBus.Publish(new Events.OnHomeClicked());
         });
     }
 }

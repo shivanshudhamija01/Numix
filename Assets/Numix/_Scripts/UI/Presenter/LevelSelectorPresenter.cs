@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LevelSelectorPresenter : PresenterBase<LevelSelectorView>
 {
-    public LevelSelectorPresenter(LevelSelectorView view, IEventBus eventBus) : base(view, eventBus)
+    public LevelSelectorPresenter(LevelSelectorView view, IEventBus eventBus, IAudioService audioService) : base(view, eventBus, audioService)
     {
 
     }
@@ -14,10 +14,10 @@ public class LevelSelectorPresenter : PresenterBase<LevelSelectorView>
         view.CreateUI();
         view.OnLevelClicked += HandleLevelClicked;
     }
-  
+
     private void HandleLevelClicked(int levelIndex)
     {
-        Debug.Log("Clicked Level: " + levelIndex);
+        audioService.PlaySFX(SoundType.click);
         eventBus.Publish(new Events.OnLoadLevel(levelIndex));
     }
     public override void Dispose()

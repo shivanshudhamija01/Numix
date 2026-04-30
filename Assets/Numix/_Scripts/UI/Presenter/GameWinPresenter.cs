@@ -5,7 +5,7 @@ using UnityEngine;
 public class GameWinPresenter : PresenterBase<GameWinView>
 {
     private IGameServices gameServices;
-    public GameWinPresenter(GameWinView view, IEventBus eventBus) : base(view, eventBus)
+    public GameWinPresenter(GameWinView view, IEventBus eventBus, IAudioService audioService) : base(view, eventBus, audioService)
     {
         gameServices = ServiceLocator.Get<IGameServices>();
     }
@@ -14,14 +14,15 @@ public class GameWinPresenter : PresenterBase<GameWinView>
         view.CreateUI();
         view.OnNextLevel(() =>
         {
-            Debug.Log("Load Next Level");
+            audioService.PlaySFX(SoundType.click);
             gameServices.CurrentLevel++;
             eventBus.Publish(new Events.OnLoadLevel(gameServices.CurrentLevel));
             eventBus.Publish(new Events.OnNextLevelLoaded());
         });
         view.OnHome(() =>
         {
-            Debug.Log("Open the home page");
+            audioService.PlaySFX(SoundType.click);
+            eventBus.Publish(new Events.OnHomeClicked());
         });
     }
 }

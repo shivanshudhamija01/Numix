@@ -2,9 +2,7 @@ using UnityEngine;
 
 public class InputService : IInputService
 {
-    // Minimum drag distance in pixels to register as a swipe
     private const float SwipeThreshold = 50f;
-    // Diagonal detection: if both axis deltas are within this ratio of each other, it's diagonal
     private const float DiagonalRatio = 0.4f;
 
     private Vector2 touchStartPos;
@@ -20,7 +18,6 @@ public class InputService : IInputService
     private bool _backwardLeft = false;
     private bool _backwardRight = false;
 
-    // Called every frame from BallMotion.Update()
     public void Update()
     {
         ResetFlags();
@@ -39,30 +36,36 @@ public class InputService : IInputService
             touchStarted = false;
             Vector2 delta = touch.position - touchStartPos;
 
-            float absX = Mathf.Abs(delta.x);
-            float absY = Mathf.Abs(delta.y);
-            float magnitude = delta.magnitude;
+            // Rotate delta by -45° to compensate for isometric camera rotation
+            float angle = -45f * Mathf.Deg2Rad;
+            float cos = Mathf.Cos(angle);
+            float sin = Mathf.Sin(angle);
+            Vector2 rotatedDelta = new Vector2(
+                delta.x * cos - delta.y * sin,
+                delta.x * sin + delta.y * cos
+            );
 
-            // Not enough drag — treat as tap
+            float absX = Mathf.Abs(rotatedDelta.x);
+            float absY = Mathf.Abs(rotatedDelta.y);
+            float magnitude = rotatedDelta.magnitude;
+
             if (magnitude < SwipeThreshold)
             {
                 _tap = true;
                 return;
             }
 
-            // Normalize both axes relative to the larger one
             float ratioX = absX / magnitude;
             float ratioY = absY / magnitude;
 
             bool isHorizontal = ratioX > DiagonalRatio;
             bool isVertical = ratioY > DiagonalRatio;
 
-            bool movingRight = delta.x > 0;
-            bool movingUp = delta.y > 0; 
+            bool movingRight = rotatedDelta.x > 0;
+            bool movingUp = rotatedDelta.y > 0;
 
             if (isVertical && isHorizontal)
             {
-                // Diagonal
                 if (movingUp && movingRight) _forwardRight = true;
                 else if (movingUp && !movingRight) _forwardLeft = true;
                 else if (!movingUp && movingRight) _backwardRight = true;
@@ -70,13 +73,11 @@ public class InputService : IInputService
             }
             else if (isVertical)
             {
-                // Pure vertical
                 if (movingUp) _forward = true;
                 else _backward = true;
             }
             else
             {
-                // Pure horizontal
                 if (movingRight) _right = true;
                 else _left = true;
             }

@@ -50,7 +50,7 @@ public class GameBootStrapper : MonoBehaviour
         var gameService = new GameService();
         ServiceLocator.Register<IGameServices>(gameService);
 
-        var uiBoot = new UIBootStrapService(eventBus);
+        var uiBoot = new UIBootStrapService(eventBus, audio);
         ServiceLocator.Register<IUIBootStrap>(uiBoot);
 
         var pathHintService = new PathHintService();
@@ -76,11 +76,12 @@ public class GameBootStrapper : MonoBehaviour
     }
     private void InitializeServices()
     {
+        Debug.Log("InitializeServices inside the game boot strap");
         moveValidationService.Initialize(eventBus);
         stepTrackerService.Initialize(eventBus);
         puzzleValidationService.Initialize(eventBus);
         gridDataService.Initialize(eventBus);
-
+        audioService.PlayBGM(SoundType.BGM);
         levelLoader.Initialize(eventBus, moveValidationService, gridDataService, gameServices, puzzleValidationService, pathHintService);
 
         uiBootStrap.Initialize();

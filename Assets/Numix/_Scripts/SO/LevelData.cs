@@ -7,5 +7,7 @@ public class LevelData : ScriptableObject
     public int height;
     public TileData[] grid;
     public List<Vector2Int> solutionPath = new List<Vector2Int>();
+    public float CameraFOV;
+    public Vector3 CameraPos;
 
 }

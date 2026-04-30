@@ -74,3 +74,5 @@ MonoBehaviour:
   - {x: 4, y: 0}
   - {x: 3, y: 0}
   - {x: 2, y: 1}
+  CameraFOV: 6.5
+  CameraPos: {x: 0, y: 0, z: 0}

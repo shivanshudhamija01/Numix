@@ -2,14 +2,12 @@ using System;
 public enum SoundType
 {
     BGM,
-    // a,
-    // b,
-    // c,
-    // c2,
+    click,
     d1,
     e1,
     f,
     g
+
 }
 public enum TileType
 {
@@ -24,3 +22,8 @@ public class TileData
     public TileType type;
     public int number;
 }
+
+// a,
+// b,
+// c,
+// c2,

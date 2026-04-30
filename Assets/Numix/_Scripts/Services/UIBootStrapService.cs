@@ -19,12 +19,14 @@ public class UIBootStrapService : IUIBootStrap
     private GamePausePresenter gamePausePresenter;
     private LevelSelectorPresenter levelSelectorPresenter;
     private GamePlayPresenter gamePlayPresenter;
+    private IAudioService audioService;
     private List<ViewBase> viewBaseList = new List<ViewBase>();
     private List<IPresenter> presenterBaseList = new List<IPresenter>();
 
-    public UIBootStrapService(IEventBus eventBus)
+    public UIBootStrapService(IEventBus eventBus, IAudioService audioService)
     {
         this.eventBus = eventBus;
+        this.audioService = audioService;
     }
     public void Initialize()
     {
@@ -56,13 +58,13 @@ public class UIBootStrapService : IUIBootStrap
     }
     private void InstantiatePresenters()
     {
-        mainMenuPresenter = new MainMenuPresenter(mainMenuView, eventBus);
-        settingPresenter = new SettingPresenter(settingView, eventBus);
-        gameWinPresenter = new GameWinPresenter(gameWinView, eventBus);
-        gameLostPresenter = new GameLostPresenter(gameLostView, eventBus);
-        gamePausePresenter = new GamePausePresenter(gamePauseView, eventBus);
-        levelSelectorPresenter = new LevelSelectorPresenter(levelSelectorView, eventBus);
-        gamePlayPresenter = new GamePlayPresenter(gamePlayView, eventBus);
+        mainMenuPresenter = new MainMenuPresenter(mainMenuView, eventBus, audioService);
+        settingPresenter = new SettingPresenter(settingView, eventBus, audioService);
+        gameWinPresenter = new GameWinPresenter(gameWinView, eventBus, audioService);
+        gameLostPresenter = new GameLostPresenter(gameLostView, eventBus, audioService);
+        gamePausePresenter = new GamePausePresenter(gamePauseView, eventBus, audioService);
+        levelSelectorPresenter = new LevelSelectorPresenter(levelSelectorView, eventBus, audioService);
+        gamePlayPresenter = new GamePlayPresenter(gamePlayView, eventBus, audioService);
     }
     private void InitializePresenters()
     {

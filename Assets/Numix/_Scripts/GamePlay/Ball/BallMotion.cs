@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -13,16 +14,24 @@ public class BallMotion : MonoBehaviour
     private Transform ball;
     private bool isMoving = false;
     private float oscillationTime = 0f;
+    private bool canMove = true;
 
     private IInputService inputService;
     private IMoveValidationService moveValidationService;
     private IStepTrackerService stepTrackerService;
     private IPuzzleValidationService puzzleValidationService;
     private IAudioService audioService;
+    private IEventBus eventBus;
+    private Action<Events.OnLevelComplete> levelCompleteHandler;
+    private Action<Events.OnSettingButtonClicked> settingHandler;
+    private Action<Events.OnLevelFailed> failedHandler;
+    private Action<Events.OnExitButtonClicked> exitHandler;
+    private Action<Events.OnGamePaused> gamePauseHandler;
 
     // Here i have to add a logic so that on game win , need to stop the player from accepting the input services.
     void Awake()
     {
+        eventBus = ServiceLocator.Get<IEventBus>();
         ballInitialPosition = new Vector3(transform.position.x, 0, transform.position.z);
         ball = GetComponent<Transform>();
 
@@ -37,10 +46,29 @@ public class BallMotion : MonoBehaviour
         puzzleValidationService.EvaluateTile(ballInitialPosition);
 
         audioService.PlaySFX(SoundType.d1);
-
-        Debug.Log(inputService == null ? "InputService NULL" : "InputService OK");
     }
+    private void OnEnable()
+    {
+        levelCompleteHandler = _ => DisableMovement();
+        settingHandler = _ => DisableMovement();
+        failedHandler = _ => DisableMovement();
+        exitHandler = _ => EnableMovement();
+        gamePauseHandler = _ => DisableMovement();
 
+        eventBus.Subscribe<Events.OnLevelComplete>(levelCompleteHandler);
+        eventBus.Subscribe<Events.OnSettingButtonClicked>(settingHandler);
+        eventBus.Subscribe<Events.OnLevelFailed>(failedHandler);
+        eventBus.Subscribe<Events.OnExitButtonClicked>(exitHandler);
+        eventBus.Subscribe<Events.OnGamePaused>(gamePauseHandler);
+    }
+    private void OnDisable()
+    {
+        eventBus.Unsubscribe<Events.OnLevelComplete>(levelCompleteHandler);
+        eventBus.Unsubscribe<Events.OnSettingButtonClicked>(settingHandler);
+        eventBus.Unsubscribe<Events.OnLevelFailed>(failedHandler);
+        eventBus.Unsubscribe<Events.OnExitButtonClicked>(exitHandler);
+        eventBus.Unsubscribe<Events.OnGamePaused>(gamePauseHandler);
+    }
     void Update()
     {
         // Let InputService process raw touch data first
@@ -48,8 +76,9 @@ public class BallMotion : MonoBehaviour
 
         if (!isMoving)
         {
-            HandleInput();
             Oscillate();
+            if (!canMove) return;
+            HandleInput();
         }
     }
 
@@ -88,7 +117,6 @@ public class BallMotion : MonoBehaviour
 
         if (!moveValidationService.IsValidMove(targetPos))
         {
-            Debug.Log("Not a valid move");
             isMoving = false;
             yield break;
         }
@@ -117,10 +145,19 @@ public class BallMotion : MonoBehaviour
         stepTrackerService.IncrementStep();
         puzzleValidationService.EvaluateTile(targetPos);
 
-        SoundType randomSound = (SoundType)Random.Range(0, System.Enum.GetValues(typeof(SoundType)).Length);
+        SoundType randomSound = (SoundType)UnityEngine.Random.Range(2, System.Enum.GetValues(typeof(SoundType)).Length);
         audioService.PlaySFX(randomSound);
 
         oscillationTime = 0f;
         isMoving = false;
+    }
+
+    private void DisableMovement()
+    {
+        canMove = false;
+    }
+    private void EnableMovement()
+    {
+        canMove = true;
     }
 }

@@ -22,14 +22,7 @@ public class LevelDesigner : MonoBehaviour
     //Solution Path
     public List<Vector2Int> solutionPath = new List<Vector2Int>();
 
-    void Awake()
-    {
-        Debug.Log("Solution path is : " + solutionPath.Count);
-        for (int i = 0; i < solutionPath.Count; i++)
-        {
-            Debug.Log($"Tile {i}th is at : {solutionPath[i]}");
-        }
-    }
+
     private void OnValidate()
     {
         if (width <= 0) width = 1;

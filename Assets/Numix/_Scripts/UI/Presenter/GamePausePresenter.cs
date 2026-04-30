@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class GamePausePresenter : PresenterBase<GamePauseView>
 {
-    public GamePausePresenter(GamePauseView view, IEventBus eventBus) : base(view, eventBus)
+
+    public GamePausePresenter(GamePauseView view, IEventBus eventBus, IAudioService audioService) : base(view, eventBus, audioService)
     {
     }
 
@@ -13,19 +14,22 @@ public class GamePausePresenter : PresenterBase<GamePauseView>
         view.CreateUI();
         view.OnExit(() =>
         {
+            audioService.PlaySFX(SoundType.click);
             eventBus.Publish(new Events.OnExitButtonClicked());
         });
         view.OnHome(() =>
         {
+            audioService.PlaySFX(SoundType.click);
             eventBus.Publish(new Events.OnHomeClicked());
         });
         view.OnRestart(() =>
         {
+            audioService.PlaySFX(SoundType.click);
             eventBus.Publish(new Events.OnLevelRestart());
         });
         view.OnSetting(() =>
         {
-            Debug.Log("Setting button is clicked");
+            audioService.PlaySFX(SoundType.click);
             eventBus.Publish(new Events.OnSettingButtonClicked());
         });
     }

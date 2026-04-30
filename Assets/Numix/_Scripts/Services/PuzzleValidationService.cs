@@ -20,12 +20,11 @@ public class PuzzleValidationService : IPuzzleValidationService
         int tileNumber = gridDataService.GetTileNumber(tilePosition);
 
         bool success = stepTrackerService.CurrentSteps == tileNumber;
-        if(success)
+        if (success)
         {
             numberTilesPositions.Remove(tilePosition);
-            if(numberTilesPositions.Count == 0)
+            if (numberTilesPositions.Count == 0)
             {
-                Debug.Log("Hurray You win the level");
                 eventBus.Publish(new Events.OnLevelComplete());
             }
         }
@@ -37,7 +36,7 @@ public class PuzzleValidationService : IPuzzleValidationService
     }
     public void RefreshTiles()
     {
-            numberTilesPositions = gridDataService.GetNumberTilesPosition();
+        numberTilesPositions = gridDataService.GetNumberTilesPosition();
     }
     public void Initialize(IEventBus eventBus)
     {
