@@ -94,7 +94,7 @@ public class UIManager : MonoBehaviour
         currentPanel.Show();
 
         bool canMove = currentPanel == gamePlayView;
-
+        Debug.Log("Name of current panel is " + currentPanel);
         eventBus.Publish(new Events.OnMovementStateChanged { CanMove = canMove });
     }
 
@@ -112,6 +112,10 @@ public class UIManager : MonoBehaviour
 
         currentPanel = panelStack.Pop();
         currentPanel.Show();
+
+        bool canMove = currentPanel == gamePlayView;
+        Debug.Log("Name of current panel is " + currentPanel);
+        eventBus.Publish(new Events.OnMovementStateChanged { CanMove = canMove });
     }
 
     private void SubscribeEvents()
@@ -166,6 +170,7 @@ public class UIManager : MonoBehaviour
 
     private void OnLevelComplete(Events.OnLevelComplete obj)
     {
+        gamePlayView.Hide();
         StartCoroutine(ShowPanelWithDelay(winView, popUpDelay));
     }
 
@@ -195,6 +200,7 @@ public class UIManager : MonoBehaviour
     }
     private void OnLevelFailed(Events.OnLevelFailed evt)
     {
+        gamePlayView.Hide();
         StartCoroutine(ShowPanelWithDelay(loseView, popUpDelay));
     }
     private IEnumerator ShowPanelWithDelay(ViewBase panel, float delay)

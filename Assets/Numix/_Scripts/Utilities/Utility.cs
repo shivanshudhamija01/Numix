@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Utility
+public static class Utility
 {
-
+    public static string LEVEL_KEY = "UnlockedLevel";
 }
 [Serializable]
 public class Coordinate

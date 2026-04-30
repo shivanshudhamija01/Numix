@@ -1,4 +1,5 @@
 using FairyGUI;
+using UnityEngine;
 public class LevelSelectorView : ViewBase
 {
     protected override string PackageName => "LevelSelector";
@@ -6,7 +7,7 @@ public class LevelSelectorView : ViewBase
 
     private GList levelList;
     private int totalLevels;
-
+    private int unlockedLevel;
     public System.Action<int> OnLevelClicked;
 
     protected override void OnCreateUI()
@@ -27,7 +28,17 @@ public class LevelSelectorView : ViewBase
         int levelIndex = index + 1;
 
         levelTxt.text = levelIndex.ToString();
-        lockIcon.visible = false;
+
+        if(levelIndex <= unlockedLevel)
+        {
+            lockIcon.visible = false;
+            levelButton.touchable = true;
+        }
+        else
+        {
+            lockIcon.visible = true;
+            levelButton.touchable = false;
+        }
 
         levelButton.onClick.Clear();
 
@@ -41,6 +52,7 @@ public class LevelSelectorView : ViewBase
     {
         base.Show();
         levelList.numItems = totalLevels;
+        unlockedLevel = PlayerPrefs.GetInt(Utility.LEVEL_KEY, 1);
         levelList.RefreshVirtualList();
     }
 

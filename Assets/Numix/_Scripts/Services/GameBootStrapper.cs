@@ -20,6 +20,10 @@ public class GameBootStrapper : MonoBehaviour
     private IHintService hintService;
     void Awake()
     {
+        if(!PlayerPrefs.HasKey(Utility.LEVEL_KEY))
+        {
+            PlayerPrefs.SetInt(Utility.LEVEL_KEY, 1);
+        }
         RegisterServices();
         SetServiceReferences();
         InitializeServices();
@@ -41,14 +45,15 @@ public class GameBootStrapper : MonoBehaviour
         var stepTracker = new StepTrackerService();
         ServiceLocator.Register<IStepTrackerService>(stepTracker);
 
-        var puzzleValidation = new PuzzleValidationService(gridData, stepTracker, eventBus);
+        var gameService = new GameService();
+        ServiceLocator.Register<IGameServices>(gameService);
+        
+        var puzzleValidation = new PuzzleValidationService(gridData, stepTracker, eventBus, gameService);
         ServiceLocator.Register<IPuzzleValidationService>(puzzleValidation);
 
         var audio = new AudioService(audioInstaller);
         ServiceLocator.Register<IAudioService>(audio);
 
-        var gameService = new GameService();
-        ServiceLocator.Register<IGameServices>(gameService);
 
         var uiBoot = new UIBootStrapService(eventBus, audio);
         ServiceLocator.Register<IUIBootStrap>(uiBoot);
@@ -76,7 +81,6 @@ public class GameBootStrapper : MonoBehaviour
     }
     private void InitializeServices()
     {
-        Debug.Log("InitializeServices inside the game boot strap");
         moveValidationService.Initialize(eventBus);
         stepTrackerService.Initialize(eventBus);
         puzzleValidationService.Initialize(eventBus);

@@ -7,12 +7,14 @@ public class PuzzleValidationService : IPuzzleValidationService
     private readonly IGridDataService gridDataService;
     private readonly IStepTrackerService stepTrackerService;
     private readonly IEventBus eventBus;
+    private readonly IGameServices gameService;
     private List<Vector3> numberTilesPositions;
-    public PuzzleValidationService(IGridDataService gridDataService, IStepTrackerService stepTrackerService, IEventBus eventBus)
+    public PuzzleValidationService(IGridDataService gridDataService, IStepTrackerService stepTrackerService, IEventBus eventBus,IGameServices gameService)
     {
         this.gridDataService = gridDataService;
         this.stepTrackerService = stepTrackerService;
         this.eventBus = eventBus;
+        this.gameService = gameService;
         numberTilesPositions = gridDataService.GetNumberTilesPosition();
     }
     public void EvaluateTile(Vector3 tilePosition)
@@ -25,6 +27,12 @@ public class PuzzleValidationService : IPuzzleValidationService
             numberTilesPositions.Remove(tilePosition);
             if (numberTilesPositions.Count == 0)
             {
+                int currentLevel = gameService.CurrentLevel + 1;
+                int unlockedLevel = PlayerPrefs.GetInt(Utility.LEVEL_KEY, 1);
+                if (currentLevel > unlockedLevel)
+                {
+                    PlayerPrefs.SetInt(Utility.LEVEL_KEY, currentLevel);
+                }
                 eventBus.Publish(new Events.OnLevelComplete());
             }
         }
