@@ -81,7 +81,6 @@ public class Tile : MonoBehaviour, IPointerClickHandler, ITile
     {
         if (tileNumber <= 0 && evt.position == transform.position)
         {
-            Debug.Log("Hnji ki haal hai ");
             isVisited = true;
             tileRenderer.material = visitedTile;
             tileNumberText.text = stepTrackerService.CurrentSteps.ToString();

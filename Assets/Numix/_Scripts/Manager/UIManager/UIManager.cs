@@ -18,6 +18,7 @@ public class UIManager : MonoBehaviour
     private GameLostView loseView;
     private LevelSelectorView levelSelectorView;
     private GamePlayView gamePlayView;
+    private InfoPanelView infoPanelView;
 
     // 🔥 STACK BASED NAVIGATION
     private Stack<ViewBase> panelStack = new Stack<ViewBase>();
@@ -60,9 +61,11 @@ public class UIManager : MonoBehaviour
             else if (view is GameLostView) loseView = (GameLostView)view;
             else if (view is LevelSelectorView) levelSelectorView = (LevelSelectorView)view;
             else if (view is GamePlayView) gamePlayView = (GamePlayView)view;
+            else if (view is InfoPanelView) infoPanelView = (InfoPanelView)view;
         }
 
         // Default state
+        infoPanelView.Hide();
         mainMenuView.Show();
         levelSelectorView.Hide();
         settingView.Hide();
@@ -94,7 +97,7 @@ public class UIManager : MonoBehaviour
         currentPanel.Show();
 
         bool canMove = currentPanel == gamePlayView;
-        Debug.Log("Name of current panel is " + currentPanel);
+
         eventBus.Publish(new Events.OnMovementStateChanged { CanMove = canMove });
     }
 
@@ -114,7 +117,7 @@ public class UIManager : MonoBehaviour
         currentPanel.Show();
 
         bool canMove = currentPanel == gamePlayView;
-        Debug.Log("Name of current panel is " + currentPanel);
+
         eventBus.Publish(new Events.OnMovementStateChanged { CanMove = canMove });
     }
 
@@ -130,6 +133,7 @@ public class UIManager : MonoBehaviour
         eventBus.Subscribe<Events.OnHomeClicked>(ReturnToHome);
         eventBus.Subscribe<Events.OnLevelRestart>(OnLevelReload);
         eventBus.Subscribe<Events.OnLevelFailed>(OnLevelFailed);
+        eventBus.Subscribe<Events.OnInfoButtonClicked>(GetInfo);
     }
 
     private void UnSubscribeEvents()
@@ -144,6 +148,7 @@ public class UIManager : MonoBehaviour
         eventBus.Unsubscribe<Events.OnHomeClicked>(ReturnToHome);
         eventBus.Unsubscribe<Events.OnLevelRestart>(OnLevelReload);
         eventBus.Unsubscribe<Events.OnLevelFailed>(OnLevelFailed);
+        eventBus.Unsubscribe<Events.OnInfoButtonClicked>(GetInfo);
     }
 
     // 🎮 EVENTS
@@ -202,6 +207,10 @@ public class UIManager : MonoBehaviour
     {
         gamePlayView.Hide();
         StartCoroutine(ShowPanelWithDelay(loseView, popUpDelay));
+    }
+    private void GetInfo(Events.OnInfoButtonClicked evt)
+    {
+        SwitchPanel(infoPanelView);
     }
     private IEnumerator ShowPanelWithDelay(ViewBase panel, float delay)
     {

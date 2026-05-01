@@ -27,5 +27,9 @@ public class MainMenuPresenter : PresenterBase<MainMenuView>
             audioService.PlaySFX(SoundType.click);
             eventBus.Publish(new Events.OnSettingButtonClicked());
         });
+        view.OnInfo(() =>
+        {
+            eventBus.Publish(new Events.OnInfoButtonClicked());
+        });
     }
 }

@@ -20,7 +20,7 @@ public class GameBootStrapper : MonoBehaviour
     private IHintService hintService;
     void Awake()
     {
-        if(!PlayerPrefs.HasKey(Utility.LEVEL_KEY))
+        if (!PlayerPrefs.HasKey(Utility.LEVEL_KEY))
         {
             PlayerPrefs.SetInt(Utility.LEVEL_KEY, 1);
         }
@@ -47,7 +47,7 @@ public class GameBootStrapper : MonoBehaviour
 
         var gameService = new GameService();
         ServiceLocator.Register<IGameServices>(gameService);
-        
+
         var puzzleValidation = new PuzzleValidationService(gridData, stepTracker, eventBus, gameService);
         ServiceLocator.Register<IPuzzleValidationService>(puzzleValidation);
 
@@ -85,6 +85,12 @@ public class GameBootStrapper : MonoBehaviour
         stepTrackerService.Initialize(eventBus);
         puzzleValidationService.Initialize(eventBus);
         gridDataService.Initialize(eventBus);
+        float savedBGM = PlayerPrefs.GetFloat("BGM", 1f);
+        float savedSFX = PlayerPrefs.GetFloat("SFX", 1f);
+
+        audioService.SetBGMVolume(savedBGM);
+        audioService.SetSFXVolume(savedSFX);
+
         audioService.PlayBGM(SoundType.BGM);
         levelLoader.Initialize(eventBus, moveValidationService, gridDataService, gameServices, puzzleValidationService, pathHintService);
 

@@ -30,39 +30,18 @@ public class Events
             this.levelIndex = levelIndex;
         }
     }
-    public struct OnGameStarted : IGameEvent
-    {
+    public struct OnGameStarted : IGameEvent { }
+    public struct OnLevelComplete : IGameEvent { }
+    public struct OnLevelFailed : IGameEvent { }
+    public struct OnGamePaused : IGameEvent { }
 
-    }
-    public struct OnLevelComplete : IGameEvent
-    {
-    }
-    public struct OnLevelFailed : IGameEvent
-    {
-    }
-    public struct OnGamePaused : IGameEvent
-    {
-    }
-
-    public struct OnExitButtonClicked : IGameEvent
-    {
-    }
-    public struct OnSettingButtonClicked : IGameEvent
-    {
-    }
-    public struct OnNextLevelLoaded : IGameEvent
-    {
-    }
-    public struct OnLevelInitialized : IGameEvent
-    {
-    }
-    public struct OnHomeClicked : IGameEvent
-    {
-    }
-    public struct OnLevelRestart : IGameEvent
-    {
-
-    }
+    public struct OnExitButtonClicked : IGameEvent { }
+    public struct OnSettingButtonClicked : IGameEvent { }
+    public struct OnNextLevelLoaded : IGameEvent { }
+    public struct OnLevelInitialized : IGameEvent { }
+    public struct OnHomeClicked : IGameEvent { }
+    public struct OnLevelRestart : IGameEvent { }
+    public struct OnInfoButtonClicked : IGameEvent { }
     public struct OnMovementStateChanged : IGameEvent
     {
         public bool CanMove;

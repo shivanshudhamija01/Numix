@@ -135,7 +135,6 @@ public class BallMotion : MonoBehaviour
     private void OnGameStateChange(Events.OnMovementStateChanged evt)
     {
         canMove = evt.CanMove;
-        Debug.Log(canMove);
     }
 
 }
